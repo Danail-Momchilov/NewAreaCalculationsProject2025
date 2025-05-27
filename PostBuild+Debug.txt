@@ -1,0 +1,7 @@
+Post-Build:
+if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2025" copy "$(ProjectDir)*manifest.addin" "$(AppData)\Roaming\Autodesk\Revit\Addins\2025"
+if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2025" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Roaming\Autodesk\Revit\Addins\2025"
+if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2025" copy "$(ProjectDir)$(OutputPath)\img\*.png" "$(AppData)\Roaming\Autodesk\REVIT\Addins\2025"
+
+Debug:
+C:\Program Files\Autodesk\Revit 2025\Revit.exe
