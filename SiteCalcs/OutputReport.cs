@@ -15,7 +15,8 @@ namespace AreaCalculations2025
         public void addString(string message)
         { outputString += message; }
 
-        public void updateFinalOutput(List<double> plotAreas, List<string> plotNames, List<double> build, List<double> density, List<double> totalBuild, List<double> kint, List<double> greenAreas, List<double> achievedPercentages)
+        public void updateFinalOutput(List<double> plotAreas, List<string> plotNames, List<double> build, 
+            List<double> density, List<double> totalBuild, List<double> kint, List<double> greenAreas, List<double> achievedPercentages)
         {
             for (int i = 0; i < plotAreas.Count; i++)
             {

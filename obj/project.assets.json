@@ -11,6 +11,15 @@
           "lib/netcoreapp2.0/_._": {}
         }
       },
+      "Microsoft.Office.Interop.Excel/15.0.4795.1001": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Excel.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Excel.dll": {}
+        }
+      },
       "System.Data.DataSetExtensions/4.5.0": {
         "type": "package",
         "compile": {
@@ -92,6 +101,19 @@
         "version.txt"
       ]
     },
+    "Microsoft.Office.Interop.Excel/15.0.4795.1001": {
+      "sha512": "cuvqi/U5MYSM0gvR2l90q0m/urRgmg69EiwP5VWp1RcaJ0YT5G26Va5LaOZ3KJFc22FNihS5CUjeePUp2YpGQA==",
+      "type": "package",
+      "path": "microsoft.office.interop.excel/15.0.4795.1001",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net20/Microsoft.Office.Interop.Excel.dll",
+        "lib/netstandard2.0/Microsoft.Office.Interop.Excel.dll",
+        "microsoft.office.interop.excel.15.0.4795.1001.nupkg.sha512",
+        "microsoft.office.interop.excel.nuspec"
+      ]
+    },
     "System.Data.DataSetExtensions/4.5.0": {
       "sha512": "221clPs1445HkTBZPL+K9sDBdJRB8UN8rgjO3ztB0CQ26z//fmJXtlsr6whGatscsKGBrhJl5bwJuKSA8mwFOw==",
       "type": "package",
@@ -115,6 +137,7 @@
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
       "Microsoft.CSharp >= 4.7.0",
+      "Microsoft.Office.Interop.Excel >= 15.0.4795.1001",
       "System.Data.DataSetExtensions >= 4.5.0"
     ]
   },
@@ -166,6 +189,10 @@
           "Microsoft.CSharp": {
             "target": "Package",
             "version": "[4.7.0, )"
+          },
+          "Microsoft.Office.Interop.Excel": {
+            "target": "Package",
+            "version": "[15.0.4795.1001, )"
           },
           "System.Data.DataSetExtensions": {
             "target": "Package",

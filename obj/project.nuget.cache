@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "f9lw0+3Sd0pGvj6UK9KOdWQquxTlKVcAnx8Whp0umUFNvJdM2TQHm6l7w81CT7Y9iMx25ykKu6gD+RGq7I6dqQ==",
+  "dgSpecHash": "SAsHx1LBHa5Qifu9ssQiWHmTAO3Ny7Nf2J0zY+Ok3k13iX2JhhMSsdCC+gCvXX87Ch079xcvo3kPRNCEwZ2tqQ==",
   "success": true,
   "projectFilePath": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalculations2025.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\microsoft.office.interop.excel\\15.0.4795.1001\\microsoft.office.interop.excel.15.0.4795.1001.nupkg.sha512",
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\system.data.datasetextensions\\4.5.0\\system.data.datasetextensions.4.5.0.nupkg.sha512"
   ],
   "logs": []

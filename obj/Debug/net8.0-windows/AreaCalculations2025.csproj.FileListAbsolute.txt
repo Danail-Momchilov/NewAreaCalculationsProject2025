@@ -1,12 +1,11 @@
+B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.deps.json
+B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.dll
+B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.pdb
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations2025.csproj.AssemblyReference.cache
-B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations2025.csproj.ResolveComReference.cache
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalcs\AreaCoefficientsWindow.g.cs
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\Excel\SheetNameWindow.g.cs
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations_MarkupCompile.cache
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations_MarkupCompile.lref
-B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.deps.json
-B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.dll
-B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Debug\net8.0-windows\AreaCalculations.pdb
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalcs\AreaCoefficientsWindow.baml
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\Excel\SheetNameWindow.baml
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations.g.resources
