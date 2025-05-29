@@ -9,7 +9,7 @@
       "AreaCalculations/1.0.0": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
-          "Microsoft.Office.Interop.Excel": "15.0.4795.1001",
+          "Microsoft.Office.Interop.Excel": "15.0.4420.1017",
           "System.Data.DataSetExtensions": "4.5.0"
         },
         "runtime": {
@@ -17,11 +17,11 @@
         }
       },
       "Microsoft.CSharp/4.7.0": {},
-      "Microsoft.Office.Interop.Excel/15.0.4795.1001": {
+      "Microsoft.Office.Interop.Excel/15.0.4420.1017": {
         "runtime": {
-          "lib/netstandard2.0/Microsoft.Office.Interop.Excel.dll": {
+          "lib/net20/Microsoft.Office.Interop.Excel.dll": {
             "assemblyVersion": "15.0.0.0",
-            "fileVersion": "15.0.4795.1000"
+            "fileVersion": "15.0.4420.1017"
           }
         }
       },
@@ -41,12 +41,12 @@
       "path": "microsoft.csharp/4.7.0",
       "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
     },
-    "Microsoft.Office.Interop.Excel/15.0.4795.1001": {
+    "Microsoft.Office.Interop.Excel/15.0.4420.1017": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-cuvqi/U5MYSM0gvR2l90q0m/urRgmg69EiwP5VWp1RcaJ0YT5G26Va5LaOZ3KJFc22FNihS5CUjeePUp2YpGQA==",
-      "path": "microsoft.office.interop.excel/15.0.4795.1001",
-      "hashPath": "microsoft.office.interop.excel.15.0.4795.1001.nupkg.sha512"
+      "sha512": "sha512-O0X1z0mnmqlrFzWk0u0yMwY6eVu76LnsEyqptlRPHxxDMNuy8kUIer77abvfszgrnA+4EBLcDnllRbRkCUp9vA==",
+      "path": "microsoft.office.interop.excel/15.0.4420.1017",
+      "hashPath": "microsoft.office.interop.excel.15.0.4420.1017.nupkg.sha512"
     },
     "System.Data.DataSetExtensions/4.5.0": {
       "type": "package",

@@ -1,12 +1,33 @@
 {
   "version": 2,
-  "dgSpecHash": "SAsHx1LBHa5Qifu9ssQiWHmTAO3Ny7Nf2J0zY+Ok3k13iX2JhhMSsdCC+gCvXX87Ch079xcvo3kPRNCEwZ2tqQ==",
+  "dgSpecHash": "pgZFu0ztKUZEUckmHt0hBDFWmjX20YQpWvB0qTsMEYHAC1gYsiOD4FoYtLWrGJWzOaezDElEcw+U7PFmTjbK+w==",
   "success": true,
   "projectFilePath": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalculations2025.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
-    "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\microsoft.office.interop.excel\\15.0.4795.1001\\microsoft.office.interop.excel.15.0.4795.1001.nupkg.sha512",
+    "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\microsoft.office.interop.excel\\15.0.4420.1017\\microsoft.office.interop.excel.15.0.4420.1017.nupkg.sha512",
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\system.data.datasetextensions\\4.5.0\\system.data.datasetextensions.4.5.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "AreaCalculations depends on Microsoft.Office.Interop.Excel (>= 15.0.0) but Microsoft.Office.Interop.Excel 15.0.0 was not found. An approximate best match of Microsoft.Office.Interop.Excel 15.0.4420.1017 was resolved.",
+      "libraryId": "Microsoft.Office.Interop.Excel",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Office.Interop.Excel 15.0.4420.1017' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.Office.Interop.Excel",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
 }
