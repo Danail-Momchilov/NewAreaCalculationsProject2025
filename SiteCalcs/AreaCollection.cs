@@ -284,39 +284,39 @@ namespace AreaCalculations
                     totalMultiplied = area.LookupParameter("A Coefficient Orientation (Ки)").AsDouble();
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Level (Кв)"), ACLE);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Level (Кв)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Level (Кв)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Location (Км)"), ACLO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Location (Км)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Location (Км)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Height (Кив)"), ACHE);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Height (Кив)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Height (Кив)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Roof (Кпп)"), ACRO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Special (Кок)"), ACSP);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Special (Кок)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Special (Кок)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Zones (Кк)"), ACZO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Zones (Кк)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Zones (Кк)").AsDouble());
 
                     wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Correction"), ACCO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Correction").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Correction").AsDouble());
 
                     if (new List<string> { "склад", "мазе" }.Contains(area.LookupParameter("Name").AsString().ToLower()))
                         wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Storage (Ксп)"), ACSTS);
                     else
                         wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Storage (Ксп)"), ACST);                        
 
-                    totalMultiplied *= area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble());
 
                     if (new List<string> { "гараж", "паркинг" }.Contains(area.LookupParameter("Name").AsString().ToLower()))
                         wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Garage (Кпг)"), ACGAP);
                     else
                         wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Garage (Кпг)"), ACGA);
 
-                    totalMultiplied *= area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble());
 
                     area.LookupParameter("A Coefficient Multiplied").Set(totalMultiplied);
                 }
@@ -356,39 +356,39 @@ namespace AreaCalculations
                     totalMultiplied = area.LookupParameter("A Coefficient Orientation (Ки)").AsDouble();
 
                     area.LookupParameter("A Coefficient Level (Кв)").Set(ACLE);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Level (Кв)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Level (Кв)").AsDouble());
 
                     area.LookupParameter("A Coefficient Location (Км)").Set(ACLO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Location (Км)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Location (Км)").AsDouble());
 
                     area.LookupParameter("A Coefficient Height (Кив)").Set(ACHE);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Height (Кив)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Height (Кив)").AsDouble());
 
                     area.LookupParameter("A Coefficient Roof (Кпп)").Set(ACRO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble());
 
                     area.LookupParameter("A Coefficient Special (Кок)").Set(ACSP);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Special (Кок)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Special (Кок)").AsDouble());
 
                     area.LookupParameter("A Coefficient Zones (Кк)").Set(ACZO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Zones (Кк)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Zones (Кк)").AsDouble());
 
                     area.LookupParameter("A Coefficient Correction").Set(ACCO);
-                    totalMultiplied *= area.LookupParameter("A Coefficient Correction").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Correction").AsDouble());
 
                     if (new List<string> { "склад", "мазе" }.Any(keyword => area.LookupParameter("Name").AsString().ToLower().Contains(keyword)))
                         area.LookupParameter("A Coefficient Storage (Ксп)").Set(ACSTS);
                     else
                         area.LookupParameter("A Coefficient Storage (Ксп)").Set(ACST);
 
-                    totalMultiplied *= area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble());
 
                     if (new List<string> { "гараж", "паркинг" }.Any(keyword => area.LookupParameter("Name").AsString().ToLower().Contains(keyword)))
                         area.LookupParameter("A Coefficient Garage (Кпг)").Set(ACGAP);
                     else
                         area.LookupParameter("A Coefficient Garage (Кпг)").Set(ACGA);
 
-                    totalMultiplied *= area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble();
+                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble());
 
                     area.LookupParameter("A Coefficient Multiplied").Set(totalMultiplied);
                 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
+// using ClosedXML.Excel;
 using Document = Autodesk.Revit.DB.Document;
 using TaskDialog = Autodesk.Revit.UI.TaskDialog;
 using Range = Microsoft.Office.Interop.Excel.Range;
@@ -2329,5 +2330,42 @@ namespace AreaCalculations
 
             return errormessage;
         }
+
+        // ClosedXML version of exportToExcel
+        /*
+        public string exportToExcelClosedXML(string filePath, string sheetName)
+        {
+            string errorMessage = "";
+
+            try
+            {
+                using (var workbook = new XLWorkbook(filePath))
+                {
+                    // Check if sheet exists, create if it doesn't
+                    IXLWorksheet worksheet;
+                    if (workbook.Worksheets.Contains(sheetName))
+                    {
+                        worksheet = workbook.Worksheet(sheetName);
+                    }
+                    else
+                    {
+                        TaskDialog.Show("Известие", "Ще бъде създаден нов sheet с посоченото име");
+                        worksheet = workbook.Worksheets.Add(sheetName);
+                    }
+
+                    // TODO: Implement the actual Excel export logic here
+                    // This will be filled in with the migration from the original method
+                    
+                    workbook.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Грешка при експорт в Excel: {ex.Message}";
+            }
+
+            return errorMessage;
+        }
+        */
     }
 }

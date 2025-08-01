@@ -79,7 +79,8 @@ namespace AreaCalculations
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    string errormessage = areaDict.exportToExcel(filePath, window.sheetName.Text);
+                    // Use ClosedXML version for now (can switch back to exportToExcel if needed)
+                    string errormessage = areaDict.exportToExcelClosedXML(filePath, window.sheetName.Text);
 
                     if (errormessage != "")
                     {

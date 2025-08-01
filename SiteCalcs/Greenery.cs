@@ -42,18 +42,27 @@ namespace AreaCalculations
                 {
                     foreach (Floor floor in allFloors)
                         if (floor.FloorType.LookupParameter("Green Area").AsInteger() == 1)
+                        {
                             greenArea = aritAsist.addToArea(greenArea, smartRounder.sqFeetToSqMeters(floor.LookupParameter("Area").AsDouble()));
+                        }
 
                     foreach (Wall wall in allWalls)
                     {
                         if (wall.WallType.LookupParameter("Green Area").AsInteger() == 1)
                         {
                             if ((wall.LookupParameter("Unconnected Height").AsDouble() * lengthConvert) <= 200)
-                                greenArea = aritAsist.addToArea(greenArea, smartRounder.sqFeetToSqMeters(wall.LookupParameter("Area").AsDouble()));
+                            {
+                                double wallArea = smartRounder.sqFeetToSqMeters(wall.LookupParameter("Area").AsDouble());
+                                greenArea = aritAsist.addToArea(greenArea, wallArea);
+                            }
                             else
-                                greenArea = aritAsist.addToArea(greenArea, Math.Round(
-                                    aritAsist.multiplyValues(smartRounder.feetToCentimeters(wall.LookupParameter("Length").AsDouble()) / 100, 2), 
-                                    2, MidpointRounding.AwayFromZero));
+                            {
+                                double lengthCm = smartRounder.feetToCentimeters(wall.LookupParameter("Length").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                double multiplied = aritAsist.multiplyValues(lengthDiv, 2);
+                                
+                                greenArea = aritAsist.addToArea(greenArea, multiplied);
+                            }
                         }
                     }
 
@@ -65,15 +74,23 @@ namespace AreaCalculations
                         if (railingType.LookupParameter("Green Area").AsInteger() == 1)
                         {
                             if (smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble()) <= 200)
-                                greenArea = aritAsist.addToArea(greenArea, Math.Round(
-                                    aritAsist.multiplyValues(
-                                        smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble()) / 100,
-                                        smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble()) / 100),
-                                    2, MidpointRounding.AwayFromZero));
+                            {
+                                double lengthCm = smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble());
+                                double heightCm = smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                double heightDiv = aritAsist.divideValue(heightCm, 100);
+                                double multiplied = aritAsist.multiplyValues(lengthDiv, heightDiv);
+                                
+                                greenArea = aritAsist.addToArea(greenArea, multiplied);
+                            }
                             else
-                                greenArea = aritAsist.addToArea(greenArea, Math.Round(
-                                    aritAsist.multiplyValues(smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble()) / 100, 2),
-                                    2, MidpointRounding.AwayFromZero));
+                            {
+                                double lengthCm = smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                double multiplied = aritAsist.multiplyValues(lengthDiv, 2);
+                                
+                                greenArea = aritAsist.addToArea(greenArea, multiplied);
+                            }
                         }
                     }
 
@@ -88,10 +105,12 @@ namespace AreaCalculations
                     {
                         if (floor.FloorType.LookupParameter("Green Area").AsInteger() == 1)
                         {
+                            double floorArea = smartRounder.sqFeetToSqMeters(floor.LookupParameter("Area").AsDouble());
+                            
                             if (floor.LookupParameter("A Instance Area Plot").AsString() == plotNames[0])
-                                greenArea1 = aritAsist.addToArea(greenArea1, smartRounder.sqFeetToSqMeters(floor.LookupParameter("Area").AsDouble()));
+                                greenArea1 = aritAsist.addToArea(greenArea1, floorArea);
                             else if (floor.LookupParameter("A Instance Area Plot").AsString() == plotNames[1])
-                                greenArea2 = aritAsist.addToArea(greenArea2, smartRounder.sqFeetToSqMeters(floor.LookupParameter("Area").AsDouble()));
+                                greenArea2 = aritAsist.addToArea(greenArea2, floorArea);
                             else
                                 errorReport += $"Плоча с id: {floor.Id} има попълнен параметър A Instance Area Plot, " +
                                     $"чиято стойност не отговаря на нито едно от двете въведени имена за УПИ\n";
@@ -103,15 +122,18 @@ namespace AreaCalculations
                         if (wall.WallType.LookupParameter("Green Area").AsInteger() == 1)
                         {
                             double wallArea = 0;
-                            if (wall.WallType.LookupParameter("Green Area").AsInteger() == 1)
+                            
+                            if (wall.LookupParameter("Unconnected Height").AsDouble() * lengthConvert <= 200)
                             {
-                                if (wall.LookupParameter("Unconnected Height").AsDouble() * lengthConvert <= 200)
-                                    wallArea += smartRounder.sqFeetToSqMeters(wall.LookupParameter("Area").AsDouble());
-                                else
-                                    wallArea += Math.Round(
-                                        smartRounder.feetToCentimeters(wall.LookupParameter("Length").AsDouble()) / 100 * 2,
-                                        2, MidpointRounding.AwayFromZero);
+                                wallArea = smartRounder.sqFeetToSqMeters(wall.LookupParameter("Area").AsDouble());
                             }
+                            else
+                            {
+                                double lengthCm = smartRounder.feetToCentimeters(wall.LookupParameter("Length").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                wallArea = aritAsist.multiplyValues(lengthDiv, 2);
+                            }
+                            
                             if (wall.LookupParameter("A Instance Area Plot").AsString() == plotNames[0])
                                 greenArea1 = aritAsist.addToArea(greenArea1, wallArea);
                             else if (wall.LookupParameter("A Instance Area Plot").AsString() == plotNames[1])
@@ -129,19 +151,22 @@ namespace AreaCalculations
                         if (railingType.LookupParameter("Green Area").AsInteger() == 1)
                         {
                             double railingArea = 0;
-                            if (railingType.LookupParameter("Green Area").AsInteger() == 1)
+                            
+                            if (smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble()) <= 200)
                             {
-                                if (smartRounder.sqFeetToSqMeters(railingType.LookupParameter("Railing Height").AsDouble()) <= 200)
-                                    railingArea += Math.Round(
-                                        aritAsist.multiplyValues(
-                                            smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble()) / 100,
-                                            smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble()) / 100),
-                                        2, MidpointRounding.AwayFromZero);
-                                else
-                                    railingArea += Math.Round(
-                                        smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble()) / 100 * 2,
-                                        2, MidpointRounding.AwayFromZero);
+                                double lengthCm = smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble());
+                                double heightCm = smartRounder.feetToCentimeters(railingType.LookupParameter("Railing Height").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                double heightDiv = aritAsist.divideValue(heightCm, 100);
+                                railingArea = aritAsist.multiplyValues(lengthDiv, heightDiv);
                             }
+                            else
+                            {
+                                double lengthCm = smartRounder.feetToCentimeters(railing.LookupParameter("Length").AsDouble());
+                                double lengthDiv = aritAsist.divideValue(lengthCm, 100);
+                                railingArea = aritAsist.multiplyValues(lengthDiv, 2);
+                            }
+                            
                             if (railing.LookupParameter("A Instance Area Plot").AsString() == plotNames[0])
                                 greenArea1 = aritAsist.addToArea(greenArea1, railingArea);
                             else if (railing.LookupParameter("A Instance Area Plot").AsString() == plotNames[1])
@@ -152,7 +177,7 @@ namespace AreaCalculations
                     }
 
                     achievedPercentage1 = Math.Round(((greenArea1 * 100) / plotAreas[0]), 2);
-                    achievedPercentage2 = Math.Round(((greenArea1 * 100) / plotAreas[1]), 2);
+                    achievedPercentage2 = Math.Round(((greenArea2 * 100) / plotAreas[1]), 2);
                     achievedPercentages.Add(achievedPercentage1);
                     achievedPercentages.Add(achievedPercentage2);
                     greenAreas.Add(greenArea1);

@@ -14,7 +14,7 @@ namespace AreaCalculations
             number = number * 100;
             valueToAdd = valueToAdd * 100;
 
-            return (number + valueToAdd) / 100;
+            return Math.Round((number + valueToAdd) / 100, 2, MidpointRounding.AwayFromZero);
         }
         
         public double multiplyValues(double value1, double value2)
@@ -22,7 +22,14 @@ namespace AreaCalculations
             value1 = value1 * 100;
             value2 = value2 * 100;
             
-            return (value1 * value2) / 10000;
+            return Math.Round((value1 * value2) / 10000, 2, MidpointRounding.AwayFromZero);
+        }
+        
+        public double divideValue(double value, double divisor)
+        {
+            value = value * 100;
+            
+            return Math.Round(value / divisor / 100, 2, MidpointRounding.AwayFromZero);
         }
     }
 }
