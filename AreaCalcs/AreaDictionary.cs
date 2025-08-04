@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
-// using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Document = Autodesk.Revit.DB.Document;
 using TaskDialog = Autodesk.Revit.UI.TaskDialog;
 using Range = Microsoft.Office.Interop.Excel.Range;
@@ -2332,7 +2332,7 @@ namespace AreaCalculations
         }
 
         // ClosedXML version of exportToExcel
-        /*
+        
         public string exportToExcelClosedXML(string filePath, string sheetName)
         {
             string errorMessage = "";
@@ -2350,7 +2350,7 @@ namespace AreaCalculations
                     else
                     {
                         TaskDialog.Show("Известие", "Ще бъде създаден нов sheet с посоченото име");
-                        worksheet = workbook.Worksheets.Add(sheetName);
+                        worksheet = workbook.Worksheets.Add("penis");
                     }
 
                     // TODO: Implement the actual Excel export logic here
@@ -2366,6 +2366,6 @@ namespace AreaCalculations
 
             return errorMessage;
         }
-        */
+        
     }
 }

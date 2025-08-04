@@ -6,17 +6,29 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationManifest>manifest.addin</ApplicationManifest>
-    <PostBuildEvent>if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2026" copy "$(ProjectDir)manifest.addin" "$(AppData)\Roaming\Autodesk\Revit\Addins\2026"
-if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2026" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Roaming\Autodesk\Revit\Addins\2026"
-if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2026" copy "$(ProjectDir)$(OutputPath)\img\*.png" "$(AppData)\Roaming\Autodesk\REVIT\Addins\2026"</PostBuildEvent>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PostBuildEvent>
+      set ADDIN_DIR=$(AppData)\Autodesk\Revit\Addins\2026
+
+      if exist "%ADDIN_DIR%" (
+          copy /Y "$(ProjectDir)manifest.addin" "%ADDIN_DIR%\"
+          copy /Y "$(ProjectDir)$(OutputPath)*.dll" "%ADDIN_DIR%\"
+          copy /Y "$(ProjectDir)$(OutputPath)*.deps.json" "%ADDIN_DIR%\"
+          if exist "$(ProjectDir)$(OutputPath)\img" xcopy /Y /I "$(ProjectDir)$(OutputPath)\img\*.png" "%ADDIN_DIR%\img\"
+      )
+    </PostBuildEvent>
   </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
+
   <ItemGroup>
     <Content Include="img\iconPlot.png" />
   </ItemGroup>
+
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
@@ -46,12 +58,15 @@ if exist "$(AppData)\Roaming\Autodesk\Revit\Addins\2026" copy "$(ProjectDir)$(Ou
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+
   <ItemGroup>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
 </Project>
