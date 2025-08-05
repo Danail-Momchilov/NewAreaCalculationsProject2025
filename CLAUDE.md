@@ -173,3 +173,32 @@ The current implementation uses Microsoft Office Interop, which has several limi
 - Includes smart rounding functionality for calculations
 - Project appears to be version 1.06 based on release files
 - **IMPORTANT**: Recent upgrade to .NET 8 and Revit 2026 API has introduced floating-point precision display issues
+
+## Excel Export Migration (Interop to ClosedXML)
+
+### Naming Conventions for ClosedXML Migration
+When converting Excel Interop methods to ClosedXML equivalents:
+
+1. **Variable Names**: 
+   - Keep existing naming: `workSheet` (capital S) - NOT `worksheet` (lowercase s)
+   - Follow original Interop code variable naming exactly
+
+2. **Method Names**: 
+   - Original Interop helpers: `setMergeBordersColorAndAlignment`, `setBoldRange`, `setPlotBoundaries`
+   - ClosedXML equivalents: Add `XL` suffix: `setMergeBordersColorAndAlignmentXL`, `setBoldRangeXL`, `setPlotBoundariesXL`
+
+3. **Parameter Consistency**:
+   - All helper method parameters must use `workSheet` (capital S) to match calling code
+   - Method signatures should maintain the same parameter order and types as Interop versions
+
+4. **Type Declarations**:
+   - **NEVER use `var`** unless absolutely necessary
+   - Always specify the correct explicit type (e.g., `IXLRange`, `IXLWorksheet`, `string`, `int`)
+   - Example: Use `IXLRange mergeRange = workSheet.Range(...)` NOT `var mergeRange = workSheet.Range(...)`
+
+### Migration Progress
+- ✅ **Precision Issues**: Fixed using AritmeticAssistant class
+- ✅ **ClosedXML Integration**: NuGet package added with proper dependency deployment
+- 🔄 **Excel Export**: Partial migration complete (lines 1675-1813)
+- ❌ **Formatting Issues**: Header merging and borders need refinement
+- ❌ **Complete Migration**: Need to finish property loops and area calculations
