@@ -2,11 +2,6 @@
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.Office.Interop.Excel;
-using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
-using Borders = Microsoft.Office.Interop.Excel.Borders;
-using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,7 +18,6 @@ using System.Windows.Input;
 using System.Windows.Media.TextFormatting;
 using static System.Net.Mime.MediaTypeNames;
 using Document = Autodesk.Revit.DB.Document;
-using Range = Microsoft.Office.Interop.Excel.Range;
 using Regex = System.Text.RegularExpressions.Regex;
 using TaskDialog = Autodesk.Revit.UI.TaskDialog;
 
@@ -122,9 +116,6 @@ namespace AreaCalculations
 
                 else
                 {
-                    // TODO: check whether an Area has a plotName, that is not relative to the ones in the Project Info (is it actually needed?)
-                    // TODO
-                    // TODO
                     missingAreasCount++;
                     missingAreasData += $"{area.Id} {area.Number} {area.Name} {area.Area}\n";
                     // TODO
@@ -393,7 +384,8 @@ namespace AreaCalculations
         }
         private double ExtractLevelHeight(Level level)
         {
-            return level.Elevation;
+            double elevation = level.Elevation;
+            return elevation;
         }
         private string ReorderEntrance(string entranceName)
         {
@@ -490,7 +482,6 @@ namespace AreaCalculations
                     Area randomArea = areaGroup[randomGroup][0];
                     string areasInfo = $"plot: {randomArea.LookupParameter("A Instance Area Plot").AsString()} and area group: {randomArea.LookupParameter("A Instance Area Group").AsString()}";
 
-                    TaskDialog.Show("Warning", $"Surplus could not be distributed for parameters {parameterNamePercent} and {parameterNameArea} for {areasInfo}");
 
                     transaction.Commit();
                     return;
@@ -552,8 +543,6 @@ namespace AreaCalculations
                     Area randomArea = areaGroup[randomGroup][0];
                     string areasInfo = $"plot: {randomArea.LookupParameter("A Instance Area Plot").AsString()} and area group: {randomArea.LookupParameter("A Instance Area Group").AsString()}";
 
-                    TaskDialog.Show("Warning", $"Surplus area could not be distributed for parameters {parameterNameArea} for {areasInfo}. " +
-                        $"// Remaining surplus is {areaSurplus} | Number of cycles: {numbOfAreaCycles}");
 
                     transaction.Commit();
                     return;
@@ -620,7 +609,6 @@ namespace AreaCalculations
                     Area randomArea = areaGroup[randomGroup][0];
                     string areasInfo = $"plot: {randomArea.LookupParameter("A Instance Area Plot").AsString()} and area group: {randomArea.LookupParameter("A Instance Area Group").AsString()}";
 
-                    TaskDialog.Show("Warning", $"Surplus could not be distributed for parameter {parameterNameArea}, {areasInfo}");
 
                     transaction.Commit();
                     return;
@@ -1534,806 +1522,6 @@ namespace AreaCalculations
                 }              
             }            
         }
-        private void exportToExcelAdjascentRegular(Worksheet workSheet, int x, Area areaSub, bool isLand, string mainAreaNumber)
-        {
-            Range areaAdjRangeStr = workSheet.Range[$"A{x}", $"B{x}"];
-            areaAdjRangeStr.set_Value(XlRangeValueDataType.xlRangeValueDefault, new[] { areaSub.LookupParameter("Number").AsString(), areaSub.LookupParameter("Custom Name").AsString() });
-
-            areaAdjRangeStr.HorizontalAlignment = XlHAlign.xlHAlignRight;
-            areaAdjRangeStr.Borders.LineStyle = XlLineStyle.xlContinuous;
-            areaAdjRangeStr.Font.Italic = true;
-
-            Range areaAdjRangeDouble = workSheet.Range[$"C{x}", $"O{x}"];
-            areaAdjRangeDouble.NumberFormat = "0.00";
-
-            if (isLand)
-            {
-                areaAdjRangeDouble.set_Value(XlRangeValueDataType.xlRangeValueDefault, new object[] { DBNull.Value, 
-                                                        smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("Area").AsDouble()),
-                                                        DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                                                        DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value,
-                                                        Math.Round(areaSub.LookupParameter("A Instance RLP Area %")?.AsDouble() ?? 0.0, 3),
-                                                        smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("A Instance RLP Area").AsDouble())});
-            }
-            else
-            {
-                areaAdjRangeDouble.set_Value(XlRangeValueDataType.xlRangeValueDefault, new object[] { smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("Area").AsDouble()), 
-                                                        DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                                                        DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value });
-            }
-
-            areaAdjRangeDouble.Font.Italic = true;
-
-            Borders areaAdjRangeBorders = areaAdjRangeDouble.Borders;
-            areaAdjRangeBorders[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-            areaAdjRangeBorders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-            areaAdjRangeBorders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-            areaAdjRangeBorders[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-
-            setBoldRange(workSheet, "N", "O", x);
-        }
-        private void setBoldRange(Worksheet workSheet, string startCell, string endCell, int row)
-        {
-            Range boldRange = workSheet.Range[$"{startCell}{row}", $"{endCell}{row}"];
-            boldRange.Font.Bold = true;
-        }
-        private void setWrapRange(Worksheet worksheet, string startCell, string endCell, int row)
-        {
-            Range wrapRange = worksheet.Range[$"{startCell}{row}", $"{endCell}{row}"];
-            wrapRange.WrapText = true;
-        }
-        private void setPlotBoundaries(Worksheet workSheet, string start, string end, int rangeStart, int rangeEnd)
-        {
-            Range cellsFive = workSheet.Range[$"{start}{rangeStart}", $"{end}{rangeEnd}"];
-            Borders bordersFive = cellsFive.Borders;
-            bordersFive[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-            bordersFive[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-            bordersFive[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-            bordersFive[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-            cellsFive.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.White);
-        }
-        private void setExcelDecimalsFormatting(Worksheet workSheet, int row)
-        {
-            workSheet.get_Range($"C{row}", $"D{row}").NumberFormat = "0.00";
-            workSheet.get_Range($"E{row}", $"E{row}").NumberFormat = "0.0";
-            workSheet.get_Range($"F{row}", $"F{row}").NumberFormat = "0.000";
-            workSheet.get_Range($"G{row}", $"H{row}").NumberFormat = "0.000";
-            workSheet.get_Range($"I{row}", $"L{row}").NumberFormat = "0.00";
-            workSheet.get_Range($"M{row}", $"N{row}").NumberFormat = "0.000";
-            workSheet.get_Range($"O{row}", $"O{row}").NumberFormat = "0.00";
-        }
-        private void setAllRangeBorders(Range range)
-        {
-            Borders blankBorders = range.Borders;
-            blankBorders[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-            blankBorders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-            blankBorders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-            blankBorders[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-        }
-        private void setSumFormulaExcludingRows(Worksheet workSheet, string column, int row, int startLine, int endLine, List<int> linesToExclude)
-        {
-            Range range = workSheet.Range[$"{column}{row}", $"{column}{row}"];
-            string sumFormula = $"=SUM({column}{startLine}:{column}{endLine})";
-
-            foreach (int line in linesToExclude)
-            {
-                sumFormula += $"-{column}{line}";
-            }
-
-            range.Formula = sumFormula;
-        }
-        private void setMergeBordersColorAndAlignment(Worksheet workSheet, string rangeStart, string rangeEnd, int row, bool setRowHeight, int rowHeight, 
-            bool wrapText, bool setVerticalTop, bool colorWhite, bool colorGrey, bool setHorizontalCenter)
-        {
-            Range mergeRangeObject = workSheet.Range[$"{rangeStart}{row}", $"{rangeEnd}{row}"];
-            mergeRangeObject.Merge();
-            mergeRangeObject.Font.Bold = true;
-            mergeRangeObject.Borders.LineStyle = XlLineStyle.xlContinuous;
-            mergeRangeObject.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-
-            if (colorWhite) mergeRangeObject.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.White);
-
-            if (colorGrey) mergeRangeObject.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-
-            if (setRowHeight) mergeRangeObject.RowHeight = rowHeight;
-
-            if (wrapText) mergeRangeObject.WrapText = true;
-
-            if (setVerticalTop) mergeRangeObject.VerticalAlignment = XlVAlign.xlVAlignTop;
-
-            if (setHorizontalCenter) mergeRangeObject.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-        }
-        public string exportToExcel(string filePath, string sheetName)
-        {
-            string errormessage = "";
-
-            Microsoft.Office.Interop.Excel.Application excelApplication = new Microsoft.Office.Interop.Excel.Application();
-            Workbook workBook = excelApplication.Workbooks.Open(filePath, ReadOnly: false);
-
-            // check if an excel sheet with the given name already exists
-            Worksheet workSheet = null;
-
-            bool doesSheetExist = false;
-            foreach (Worksheet excelSheet in workBook.Sheets)
-            {
-                if (excelSheet.Name == sheetName)
-                {
-                    doesSheetExist = true;
-                }
-            }
-
-            // if it does, get the existing one / if it does not, create a new one
-            if (doesSheetExist)
-            {
-                workSheet = (Worksheet)workBook.Worksheets[sheetName];
-            }
-            else
-            {
-                TaskDialog.Show("Известие", "Ще бъде създаден нов sheet с посоченото име");
-
-                workSheet = (Worksheet)workBook.Sheets.Add(After: workBook.Sheets[workBook.Sheets.Count]);
-                workSheet.Name = sheetName;
-            }
-
-            // set columns' width
-            workSheet.Range["A:A"].ColumnWidth = 15;
-            workSheet.Range["B:B"].ColumnWidth = 25;
-            workSheet.Range["C:C"].ColumnWidth = 10;
-            workSheet.Range["D:D"].ColumnWidth = 10;
-            workSheet.Range["E:F"].ColumnWidth = 10;
-            workSheet.Range["G:O"].ColumnWidth = 10;
-
-            workSheet.Range["Q:Q"].ColumnWidth = 15;
-            workSheet.Range["R:R"].ColumnWidth = 10;
-
-            int x = 1;
-
-            // general formatting
-            // main title : IPID and project number
-            workSheet.Cells[x, 1] = "IPID";
-            workSheet.Cells[x, 2] = doc.ProjectInformation.LookupParameter("Project Number").AsString();
-
-            setMergeBordersColorAndAlignment(workSheet, "A", "A", x, false, 0, false, false, true, false, false);
-            setMergeBordersColorAndAlignment(workSheet, "B", "O", x, true, 35, true, false, true, false, false);
-
-            // main title : project name
-            x += 2;
-            workSheet.Cells[x, 1] = "ОБЕКТ";
-            workSheet.Cells[x, 2] = doc.ProjectInformation.LookupParameter("Project Name").AsString();
-
-            setMergeBordersColorAndAlignment(workSheet, "A", "A", x, false, 0, false, false, true, false, false);
-            setMergeBordersColorAndAlignment(workSheet, "B", "O", x, true, 35, true, false, true, false, false);
-
-            foreach (string plotName in plotNames)
-            {
-                x += 2;
-                int rangeStart = x;
-
-                // general plot data
-                // plot row
-                Range plotRange = workSheet.Range[$"A{x}", $"O{x}"];
-                object[] plotStrings = new[] { "УПИ:", $"{smartRounder.sqFeetToSqMeters(plotAreasImp[plotName])}", "кв.м.", "", 
-                    "Самостоятелни обекти и паркоместа:", "", "", "", "", "", "Забележки:", "", "", "", "", "" };                
-                plotRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, plotStrings);
-                workSheet.Cells[x, 2] = smartRounder.sqFeetToSqMeters(plotAreasImp[plotName]);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                plotRange.Font.Bold = true;
-
-                // build up area row
-                x++;
-                Range baRange = workSheet.Range[$"A{x}", $"O{x}"];
-                object[] baStrings = new[] { "ЗП:", $"{Math.Round(plotBuildAreas[plotName], 2)}", "кв.м.", "", "Ателиета:", "", "", "0", "бр", "", 
-                    "", "", "", "", "", ""};                
-                baRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, baStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotBuildAreas[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // total build area row
-                x++;
-                Range tbaRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] tbaStrings = new[] { "РЗП (надземна):", $"{Math.Round(plotTotalBuild[plotName], 2)}", "кв.м.", "",
-                    "Апартаменти:", "", "", "0", "бр", "", "от площта на общите части са приспаднати XX.XX кв.м.", "", "", "", "", ""};                
-                tbaRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, tbaStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotTotalBuild[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // underground row
-                x++;
-                Range uRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] uStrings = new[] { "РЗП (подземна):", $"{Math.Round(plotUndergroundAreas[plotName], 2)}", "кв.м.", "", 
-                    "Магазини:", "", "", "0", "бр", "", "", "", "", "", "" };                
-                uRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, uStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotUndergroundAreas[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // underground + tba row
-                x++;
-                Range utbaRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] utbaStrings = new[] { "РЗП общо:", $"{Math.Round(plotUndergroundAreas[plotName], 2) + Math.Round(plotTotalBuild[plotName], 2)}", 
-                    "кв.м.", "", "Офиси", "", "", "0", "бр", "", "", "", "", "", "" };                
-                utbaRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, utbaStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotUndergroundAreas[plotName], 2, MidpointRounding.AwayFromZero) 
-                    + Math.Round(plotTotalBuild[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // CO row
-                x++;
-                Range coRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] coStrings = new[] { "Общо СО", $"{Math.Round(plotIndividualAreas[plotName], 2)}", "кв.м.", "", 
-                    "Гаражи", "", "", "0", "бр", "", "", "", "", "", "", "" };                
-                coRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, coStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotIndividualAreas[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // CA row
-                x++;
-                Range caRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] caStrings = new[] { "Общо ОЧ", $"{Math.Round(plotCommonAreas[plotName], 2)}", "кв.м.", "", 
-                    "Складове", "", "", "0", "бр", "", "", "", "", "", "" };
-                caRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, caStrings);
-                workSheet.Cells[x, 2] = Math.Round(plotCommonAreas[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // land row
-                x += 1;
-                Range landRange = workSheet.Range[$"A{x}", $"O{x}"];
-                string[] landStrings = new[] { "Земя към СО:", $"{Math.Round(plotAreasImp[plotName] / areaConvert, 2) - Math.Round(plotLandAreas[plotName], 2)}"
-                    , "кв.м.", "", "Паркоместа", "", "", "0", "бр", "", "", "", "", "", "" };
-                landRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, landStrings);
-                workSheet.Cells[x, 2] = smartRounder.sqFeetToSqMeters(plotAreasImp[plotName]) - Math.Round(plotLandAreas[plotName], 2, MidpointRounding.AwayFromZero);
-                workSheet.get_Range($"B{x}", $"B{x}").NumberFormat = "0.00";
-                workSheet.get_Range($"B{x}", $"B{x}").HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                setBoldRange(workSheet, "A", "C", x);
-
-                // set borders
-                int rangeEnd = x;
-
-                setPlotBoundaries(workSheet, "A", "C", rangeStart, rangeEnd);
-                setPlotBoundaries(workSheet, "D", "D", rangeStart, rangeEnd);
-                setPlotBoundaries(workSheet, "E", "I", rangeStart, rangeEnd);
-                setPlotBoundaries(workSheet, "J", "J", rangeStart, rangeEnd);
-                setPlotBoundaries(workSheet, "K", "O", rangeStart, rangeEnd);
-
-                // a list, storing data about end lines of each separate proeprty group with respect to column M
-                List<string> propertyEndLinesBuildingRigts = new List<string>();
-                // a list, storing data about end lines of each separate property group with respect to column N
-                List<string> propertyEndLinesLandSum = new List<string>();
-                // a list, storing data about end lines of each separate proeprty group with respect to column O
-                List<string> propertyEndLineslandSumArea = new List<string>();
-
-                foreach (string property in plotProperties[plotName])
-                {
-                    if (!property.Contains("+") && !property.ToLower().Contains("траф") && !(property.ToLower().Equals("земя") && areAllLandAreasAdjascent(plotName)))
-                    {
-                        x += 2;
-                        workSheet.Cells[x, 1] = $"ПЛОЩООБРАЗУВАНЕ САМОСТОЯТЕЛНИ ОБЕКТИ - {property}";
-
-                        setMergeBordersColorAndAlignment(workSheet, "A", "O", x, true, 35, false, true, false, true, true);
-
-                        x++;
-                        Range indivdualRange = workSheet.Range[$"A{x}", $"O{x}"];
-                        workSheet.Cells[x, 1] = $"ПЛОЩ СО: {Math.Round(propertyIndividualAreas[plotName][property], 2)} кв.м";
-                        indivdualRange.Merge();
-                        indivdualRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                        indivdualRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        indivdualRange.Font.Bold = true;
-                        indivdualRange.Borders.LineStyle = XlLineStyle.xlContinuous;
-                        indivdualRange.RowHeight = 35;
-                        indivdualRange.VerticalAlignment = XlVAlign.xlVAlignTop;
-
-                        x++;
-                        Range propertyDataRange = workSheet.Range[$"A{x}", $"O{x}"];
-                        workSheet.Cells[x, 1] = $"ПЛОЩ ОЧ: {Math.Round(propertyCommonAreasAll[plotName][property], 2)} кв.м, от които " +
-                            $"стандартни ОЧ: {Math.Round(propertyCommonAreas[plotName][property], 2)} кв.м. " +
-                            $"и специални ОЧ: {Math.Round(propertyCommonAreasSpecial[plotName][property], 2)} кв.м.";
-                        propertyDataRange.Merge();
-                        propertyDataRange.Font.Bold = true;
-                        propertyDataRange.Borders.LineStyle = XlLineStyle.xlContinuous;
-                        propertyDataRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        propertyDataRange.RowHeight = 35;
-                        propertyDataRange.VerticalAlignment = XlVAlign.xlVAlignTop;
-
-                        x++;
-                        workSheet.Cells[x, 8] = "ОБЩИ ЧАСТИ - F3";
-                        Range commonLabelRange = workSheet.Range[$"H{x}", $"K{x}"];
-                        commonLabelRange.Merge();
-                        commonLabelRange.Font.Bold = true;
-                        commonLabelRange.Borders.LineStyle = XlLineStyle.xlContinuous;
-                        commonLabelRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        commonLabelRange.RowHeight = 35;
-                        commonLabelRange.VerticalAlignment = XlVAlign.xlVAlignTop;
-                        commonLabelRange.HorizontalAlignment = XlHAlign.xlHAlignCenter; 
-
-                        x++;
-                        Range parameterNamesRange = workSheet.Range[$"A{x}", $"O{x}"];
-                        string[] parameterNamesData = new[] { "НОМЕР СО", "НАИМЕНОВАНИЕ СО", "ПЛОЩ\nF1(F2)", "ПРИЛ.\nПЛОЩ", "КОЕФ.", "C1(C2)",
-                            "ДЯЛ ОТ\nПОДЗЕМЕН\nПАРКИНГ\nГАРАЖ", "О.Ч.", "", "СПЕЦ.\nО.Ч.", "ОБЩО\nО.Ч.", "ОБЩО\nF1(F2)+F3", "ПРАВО\nНА\nСТРОЕЖ", "ЗЕМЯ", ""};
-                        parameterNamesRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, parameterNamesData);
-                        parameterNamesRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        parameterNamesRange.Borders.LineStyle = XlLineStyle.xlContinuous;
-                        parameterNamesRange.VerticalAlignment = XlVAlign.xlVAlignTop;
-                        parameterNamesRange.Font.Bold = true;
-
-                        Range numberRange = workSheet.Range[$"A{x-1}", $"A{x}"];
-                        numberRange.Merge();
-                        numberRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(numberRange);
-
-                        Range nameRange = workSheet.Range[$"B{x - 1}", $"B{x}"];
-                        nameRange.Merge();
-                        nameRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(nameRange);
-
-                        Range areaRange = workSheet.Range[$"C{x - 1}", $"C{x}"];
-                        areaRange.Merge();
-                        areaRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(areaRange);
-
-                        Range adjAreaRange = workSheet.Range[$"D{x - 1}", $"D{x}"];
-                        adjAreaRange.Merge();
-                        adjAreaRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(adjAreaRange);
-
-                        Range coefRange = workSheet.Range[$"E{x - 1}", $"E{x}"];
-                        coefRange.Merge();
-                        coefRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(coefRange);
-
-                        Range cRange = workSheet.Range[$"F{x - 1}", $"F{x}"];
-                        cRange.Merge();
-                        cRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(cRange);
-
-                        Range percentaParkingPlaces = workSheet.Range[$"G{x - 1}", $"G{x}"];
-                        percentaParkingPlaces.Merge();
-                        percentaParkingPlaces.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(percentaParkingPlaces);
-
-                        Range commonMerge = workSheet.Range[$"H{x}", $"I{x}"];
-                        commonMerge.Merge();
-                        commonMerge.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(commonMerge);
-
-                        Range specialCommonRange = workSheet.Range[$"J{x}", $"J{x}"];
-                        specialCommonRange.Merge();
-                        specialCommonRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(specialCommonRange);
-
-                        Range totalCommonRange = workSheet.Range[$"K{x}", $"K{x}"];
-                        totalCommonRange.Merge();
-                        totalCommonRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(totalCommonRange);
-
-                        Range totalSumRange = workSheet.Range[$"L{x - 1}", $"L{x}"];
-                        totalSumRange.Merge();
-                        totalSumRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(totalSumRange);
-
-                        Range buildingRightsRange = workSheet.Range[$"M{x - 1}", $"M{x}"];
-                        buildingRightsRange.Merge();
-                        buildingRightsRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(buildingRightsRange);
-
-                        Range landMerge = workSheet.Range[$"N{x-1}", $"O{x}"];
-                        landMerge.Merge();
-                        landMerge.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                        setAllRangeBorders(landMerge);
-
-                        x++;
-                        Range parametersTypeRange = workSheet.Range[$"A{x}", $"O{x}"];
-                        string[] parametersTypeData = new[] { "", "", "m2", "m2", "", "", "% и.ч.", "% и.ч.", "m2", "m2", "m2", "m2", "% и.ч.", "% и.ч.", "m2" };
-                        parametersTypeRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, parametersTypeData);
-                        parametersTypeRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        parametersTypeRange.Font.Bold = true;
-                        parametersTypeRange.Borders.LineStyle = XlLineStyle.xlContinuous;
-                        parametersTypeRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-
-                        x++;
-                        Range blankLineRange = workSheet.Range[$"A{x}", $"O{x}"];
-                        blankLineRange.Merge();
-                        blankLineRange.UnMerge();
-                        blankLineRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                        Borders blankBorders = blankLineRange.Borders;
-                        blankBorders[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-                        blankBorders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-                        blankBorders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-                        blankBorders[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-
-                        x++;
-
-                        int startLine = x;
-
-                        List<Area> sortedAreasNormal = AreasOrganizer[plotName][property]
-                                .Where(area => area.LookupParameter("A Instance Area Category").AsString().ToLower().Equals("самостоятелен обект"))
-                                //.Where(area => !(area.LookupParameter("A Instance Area Primary").HasValue && area.LookupParameter("A Instance Area Primary").AsString() != ""))
-                                .Where(area => !area.LookupParameter("A Instance Area Group").AsString().Equals("ЗЕМЯ"))
-                                .OrderBy(area => ReorderEntrance(area.LookupParameter("A Instance Area Entrance").AsString()))
-                                .ThenBy(area => ExtractLevelHeight(area.Level))
-                                .ThenBy(area => area.LookupParameter("Number").AsString())
-                                .ToList();
-
-                        List<Area> areasToSort = new List<Area>();
-                        if (AreasOrganizer[plotName].ContainsKey("ЗЕМЯ"))
-                            areasToSort.AddRange(AreasOrganizer[plotName]["ЗЕМЯ"]);
-                        if (AreasOrganizer[plotName].ContainsKey("ТРАФ"))
-                            areasToSort.AddRange(AreasOrganizer[plotName]["ТРАФ"]);
-
-                        List<Area> sortedAreasGround = areasToSort
-                                .Where(area => area.LookupParameter("A Instance Area Group").AsString().ToLower().Equals("земя"))
-                                .OrderBy(area => ReorderEntrance(area.LookupParameter("A Instance Area Entrance").AsString()))
-                                .ThenBy(area => ExtractLevelHeight(area.Level))
-                                .ThenBy(area => area.LookupParameter("Number").AsString())
-                                .ToList();
-
-                        List<Area> sortedAreas = new List<Area>();
-
-                        if (property.ToLower() != "земя")
-                        {
-                            sortedAreas = sortedAreasNormal;
-                        }
-                        else
-                        {
-                            sortedAreas = sortedAreasGround;
-                        }
-
-                        List<string> levels = new List<string>();
-                        List<string> entrances = new List<string>();
-
-                        List<int> linesToExclude = new List<int>();
-                        List<int> linesToExcludeLand = new List<int>();
-
-                        string levelHeightStr = "";
-
-                        foreach (Area area in sortedAreas)
-                        {
-                            if (!(area.LookupParameter("A Instance Area Primary").HasValue && area.LookupParameter("A Instance Area Primary").AsString() != ""))
-                            {
-                                if (!entrances.Contains(area.LookupParameter("A Instance Area Entrance").AsString()))
-                                {
-                                    entrances.Add(area.LookupParameter("A Instance Area Entrance").AsString());
-
-                                    if (area.LookupParameter("A Instance Area Entrance").AsString().ToLower() != "НЕПРИЛОЖИМО")
-                                    {
-                                        workSheet.Cells[x, 1] = area.LookupParameter("A Instance Area Entrance").AsString();
-                                        Range entranceRangeString = workSheet.Range[$"A{x}", $"O{x}"];
-                                        entranceRangeString.Merge();
-                                        entranceRangeString.UnMerge();
-                                        entranceRangeString.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                                        x++;
-                                        levels.Clear();
-                                    }
-                                }
-
-                                if (!levels.Contains(area.LookupParameter("Level").AsValueString()))
-                                {
-                                    levels.Add(area.LookupParameter("Level").AsValueString());
-                                    double levelHeight = Math.Round(doc.GetElement(area.LookupParameter("Level").AsElementId()).LookupParameter("Elevation").AsDouble() * lengthConvert / 100, 3);
-
-                                    if (levelHeight < 0)
-                                    {
-                                        string tempString = levelHeight.ToString("F3");
-                                        levelHeightStr = $"{tempString}";
-                                    }
-                                    else if (levelHeight > 0)
-                                    {
-                                        string tempString = levelHeight.ToString("F3");
-                                        levelHeightStr = $"+ {tempString}";
-                                    }
-                                    else
-                                    {
-                                        string tempString = levelHeight.ToString("F3");
-                                        levelHeightStr = $"± {tempString}";
-                                    }
-
-                                    workSheet.Cells[x, 1] = $"КОТА {levelHeightStr}";
-                                    Range levelsRangeString = workSheet.Range[$"A{x}", $"O{x}"];
-                                    levelsRangeString.Merge();
-                                    levelsRangeString.UnMerge();
-                                    levelsRangeString.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-                                    x++;
-                                }
-
-                                try
-                                {
-                                    Range cellRangeString = workSheet.Range[$"A{x}", $"B{x}"];
-                                    Range cellRangeDouble = workSheet.Range[$"C{x}", $"O{x}"];
-
-                                    string areaNumber = area.LookupParameter("Number").AsString() ?? "SOMETHING'S WRONG";
-                                    string areaName = area.LookupParameter("Name")?.AsString() ?? "SOMETHING'S WRONG";
-                                    double areaArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Gross Area")?.AsDouble() ?? 0.0);
-                                    // TODO: rework properly for adjascent area
-                                    object areaSubjected = DBNull.Value;
-                                    // TODO: rework properly for adjascent area
-                                    double ACCO = area.LookupParameter("A Coefficient Multiplied")?.AsDouble() ?? 0.0;
-                                    double C1C2 = Math.Round(area.LookupParameter("A Instance Price C1/C2")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
-                                    double areaCommonPercent = Math.Round(area.LookupParameter("A Instance Common Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
-                                    double areaCommonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area")?.AsDouble() ?? 0.0);
-                                    double areaCommonAreaSpecial = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area Special")?.AsDouble() ?? 0.0);
-                                    double areaTotalArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Total Area")?.AsDouble() ?? 0.0);
-                                    double areaPermitPercent = Math.Round(area.LookupParameter("A Instance Building Permit %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
-                                    double areaRLPPercentage = Math.Round(area.LookupParameter("A Instance RLP Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
-                                    double areaRLP = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance RLP Area")?.AsDouble() ?? 0.0);
-
-                                    string[] areaStringData = new[] { areaNumber, areaName };
-                                    object[] areasDoubleData = new object[] { };
-
-                                    if (property.ToLower() != "земя")
-                                    {
-                                        areasDoubleData = new object[] { areaArea, areaSubjected, ACCO, C1C2, DBNull.Value, areaCommonPercent, areaCommonArea, areaCommonAreaSpecial,
-                                        areaCommonArea + areaCommonAreaSpecial, areaTotalArea, areaPermitPercent, areaRLPPercentage, areaRLP};
-                                    }
-                                    else 
-                                    {
-                                        areasDoubleData = new object[] { areaArea, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                                        DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, areaRLPPercentage, areaRLP};
-                                    }
-                                    
-                                    for (int i = 0; i < areasDoubleData.Length; i++)
-                                    {
-                                        if (areasDoubleData[i] is double && (double)areasDoubleData[i] == 0.0)
-                                        {
-                                            areasDoubleData[i] = DBNull.Value;
-                                        }
-                                    }
-                                    
-                                    cellRangeString.set_Value(XlRangeValueDataType.xlRangeValueDefault, areaStringData);
-                                    cellRangeString.Borders.LineStyle = XlLineStyle.xlContinuous;
-
-                                    cellRangeDouble.set_Value(XlRangeValueDataType.xlRangeValueDefault, areasDoubleData);
-                                    cellRangeDouble.Borders.LineStyle = XlLineStyle.xlContinuous;
-
-                                    setBoldRange(workSheet, "C", "C", x);
-                                    setBoldRange(workSheet, "H", "I", x);
-                                    setBoldRange(workSheet, "L", "O", x);
-                                    setWrapRange(workSheet, "B", "B", x);
-
-                                    setExcelDecimalsFormatting(workSheet, x);
-
-                                    // additional temporary fileds
-                                    workSheet.Cells[x, 17] = $"КОТА {levelHeightStr}";
-                                    workSheet.Cells[x, 18] = $"{Math.Round(100 * (areaCommonAreaSpecial + areaCommonArea) / areaTotalArea, 3, MidpointRounding.AwayFromZero)}";
-                                }
-                                catch
-                                {
-                                    Range cellRangeString = workSheet.Range[$"A{x}", $"B{x}"];
-                                    string[] cellsStrings = new[] { "X", "Y" };
-                                    cellRangeString.set_Value(XlRangeValueDataType.xlRangeValueDefault, cellsStrings);
-                                }
-
-                                x++;
-
-                                // identify adjascent areas, if any
-                                List<Area> adjascentAreasRegular = new List<Area>();
-
-                                foreach (Area areaSub in sortedAreas)
-                                {
-                                    string primaryArea = areaSub.LookupParameter("A Instance Area Primary").AsString();
-
-                                    if (primaryArea != null && primaryArea.Equals(area.LookupParameter("Number").AsString()))
-                                    {
-                                        adjascentAreasRegular.Add(areaSub);
-                                    }
-                                }
-
-                                // also search for adjascent areas from within ground property group
-                                List<Area> adjascentAreasLand = new List<Area>();
-
-                                if (AreasOrganizer[plotName].ContainsKey("ЗЕМЯ"))
-                                {
-                                    foreach (Area areaGround in AreasOrganizer[plotName]["ЗЕМЯ"])
-                                    {
-                                        string primaryArea = areaGround.LookupParameter("A Instance Area Primary").AsString();
-
-                                        if (primaryArea != null && primaryArea.Equals(area.LookupParameter("Number").AsString()))
-                                        {
-                                            adjascentAreasLand.Add(areaGround);
-                                        }
-                                    }
-                                }
-
-                                if (!doesHaveRoomsAdjascent(area.LookupParameter("Number").AsString()))
-                                {
-                                    if (adjascentAreasRegular.Count != 0)
-                                    {
-                                        adjascentAreasRegular.OrderBy(adjArea => adjArea.LookupParameter("Number").AsString()).ToList();
-                                        adjascentAreasRegular.Insert(0, area);
-
-                                        // write adjascent areas in excel sheet
-                                        foreach (Area areaSub in adjascentAreasRegular)
-                                        {
-                                            exportToExcelAdjascentRegular(workSheet, x, areaSub, false, area.LookupParameter("Number").AsString());
-                                            linesToExclude.Add(x);
-                                            linesToExcludeLand.Add(x);
-                                            x++;
-                                        }
-                                    }
-
-                                    if (adjascentAreasLand.Count != 0)
-                                    {
-                                        adjascentAreasLand.OrderBy(adjArea => adjArea.LookupParameter("Number").AsString()).ToList();
-
-                                        foreach (Area areaSub in adjascentAreasLand)
-                                        {
-                                            exportToExcelAdjascentRegular(workSheet, x, areaSub, true, area.LookupParameter("Number").AsString());
-                                            x++;
-                                        }
-                                    }
-
-                                    /*
-                                    // adjascent areas loop for special common areas
-                                    foreach (Area areaSub in AreasOrganizer[plotName][property])
-                                    {
-                                        if (areaSub.LookupParameter("A Instance Area Category").AsString().ToLower() == "обща част")
-                                        {
-                                            string primaryArea = areaSub.LookupParameter("A Instance Area Primary").AsString();
-
-                                            if (primaryArea != null)
-                                            {
-                                                string[] result = primaryArea.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries)
-                                                    .Select(s => s.Trim())
-                                                    .ToArray();
-
-                                                if (result.Contains(area.LookupParameter("Number").AsString()))
-                                                {
-                                                    Range areaAdjRangeStr = workSheet.Range[$"A{x}", $"O{x}"];
-                                                    areaAdjRangeStr.set_Value(XlRangeValueDataType.xlRangeValueDefault, new[] { areaSub.LookupParameter("Number").AsString(),
-                                                                                                                                areaSub.LookupParameter("Name").AsString() });
-
-                                                    areaAdjRangeStr.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                                    areaAdjRangeStr.Borders.LineStyle = XlLineStyle.xlContinuous;
-
-                                                    Range areaAdjRangeDouble = workSheet.Range[$"C{x}", $"W{x}"];
-                                                    areaAdjRangeDouble.set_Value(XlRangeValueDataType.xlRangeValueDefault, new object[] {DBNull.Value, DBNull.Value, DBNull.Value, 
-                                                                DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, 
-                                                                DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value, DBNull.Value });
-
-                                                    Borders areaAdjRangeBorders = areaAdjRangeDouble.Borders;
-                                                    areaAdjRangeBorders[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-                                                    areaAdjRangeBorders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-                                                    areaAdjRangeBorders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-                                                    areaAdjRangeBorders[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-
-                                                    x++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    */
-                                }
-
-                                else
-                                {
-                                    Dictionary<List<object>, Room> adjascentRooms = returnAdjascentRooms(area);
-
-                                    foreach (List<object> key in adjascentRooms.Keys)
-                                    {
-                                        Room room = adjascentRooms[key];
-
-                                        Range areaAdjRangeStr = workSheet.Range[$"A{x}", $"B{x}"];
-                                        areaAdjRangeStr.set_Value(XlRangeValueDataType.xlRangeValueDefault,
-                                            new[] { key[0], room.LookupParameter("Name").AsString() });
-
-                                        areaAdjRangeStr.Font.Italic = true;
-                                        areaAdjRangeStr.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                        areaAdjRangeStr.Borders.LineStyle = XlLineStyle.xlContinuous;
-
-                                        Range areaAdjRangeDouble = workSheet.Range[$"C{x}", $"O{x}"];
-                                        areaAdjRangeDouble.set_Value(XlRangeValueDataType.xlRangeValueDefault, new object[] {
-                                                        smartRounder.sqFeetToSqMeters(room.LookupParameter("Area").AsDouble()),
-                                                        DBNull.Value, DBNull.Value, DBNull.Value, 
-                                                        key[1], key[2], key[3], key[4], key[5], key[6], key[7], key[8], key[9], DBNull.Value, DBNull.Value});
-
-                                        Borders areaAdjRangeBorders = areaAdjRangeDouble.Borders;
-                                        areaAdjRangeBorders[XlBordersIndex.xlEdgeLeft].LineStyle = XlLineStyle.xlContinuous;
-                                        areaAdjRangeBorders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
-                                        areaAdjRangeBorders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
-                                        areaAdjRangeBorders[XlBordersIndex.xlEdgeBottom].LineStyle = XlLineStyle.xlContinuous;
-
-                                        setExcelDecimalsFormatting(workSheet, x);
-
-                                        linesToExclude.Add(x);
-                                        linesToExcludeLand.Add(x);
-
-                                        x++;
-                                    }
-
-                                    errormessage += areAdjascentRoomsAndAreasEqual(adjascentRooms, adjascentAreasRegular, adjascentAreasLand, area);
-                                }
-                            }
-                        }
-
-                        int endLine = x - 1;
-                        propertyEndLinesBuildingRigts.Add($"M{x}");
-                        propertyEndLinesLandSum.Add($"N{x}");
-                        propertyEndLineslandSumArea.Add($"O{x}");
-
-                        Range colorRange = workSheet.Range[$"C{startLine}", $"O{endLine}"];
-                        //colorRange.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.AliceBlue);
-
-                        // set a formula for the total area sum of F1/F2
-                        setSumFormulaExcludingRows(workSheet, "C", x, startLine, endLine, linesToExclude);
-                        setBoldRange(workSheet, "C", "C", x);
-
-                        // set a formula for the total sum of adjascent areas
-                        Range sumAdjascent = workSheet.Range[$"D{x}", $"D{x}"];
-                        sumAdjascent.Formula = $"=SUM(D{startLine}:D{endLine})";
-
-                        // set a formula for the total sum of C1/C2
-                        Range sumC1C2 = workSheet.Range[$"F{x}", $"F{x}"];
-                        sumC1C2.Formula = $"=SUM(F{startLine}:F{endLine})";
-
-                        // set a formula for the total sum of Common Areas 
-                        setSumFormulaExcludingRows(workSheet, "H", x, startLine, endLine, linesToExclude);
-                        setBoldRange(workSheet, "H", "H", x);
-
-                        // set a formula for the total sum of Special Common Areas Percentage
-                        setSumFormulaExcludingRows(workSheet, "I", x, startLine, endLine, linesToExclude);
-                        setBoldRange(workSheet, "I", "I", x);
-
-                        // set a formula for the total sum of Special Common Areas Percentage
-                        setSumFormulaExcludingRows(workSheet, "J", x, startLine, endLine, linesToExclude);
-
-                        // set a formula for the total sum of all common areas
-                        setSumFormulaExcludingRows(workSheet, "K", x, startLine, endLine, linesToExclude);
-
-                        // set a formula for the total sum of Total Area
-                        setSumFormulaExcludingRows(workSheet, "L", x, startLine, endLine, linesToExclude);
-                        setBoldRange(workSheet, "L", "L", x);
-
-                        // set a formula for the total sum of Building Right Percentage
-                        setSumFormulaExcludingRows(workSheet, "M", x, startLine, endLine, linesToExclude);
-                        setBoldRange(workSheet, "M", "M", x);
-
-                        // set a formula for the total sum of Land Area Percentage
-                        setSumFormulaExcludingRows(workSheet, "N", x, startLine, endLine, linesToExcludeLand);
-                        setBoldRange(workSheet, "N", "N", x);
-
-                        // set a formula for the total sum of Land Area
-                        setSumFormulaExcludingRows(workSheet, "O", x, startLine, endLine, linesToExcludeLand);
-                        setBoldRange(workSheet, "O", "O", x);
-
-                        // set coloring for the summed up rows
-                        Range colorRangePropertySum = workSheet.Range[$"A{endLine + 1}", $"O{endLine + 1}"];
-                        colorRangePropertySum.Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.LightGray);
-
-                        // set final decimal formatting
-                        setExcelDecimalsFormatting(workSheet, x);
-
-                        x++;
-                    }
-                }
-
-                string propertyBuildingRightsFormula = $"=SUM({string.Join(",", propertyEndLinesBuildingRigts)})";
-                workSheet.Range[$"M{x}"].Formula = propertyBuildingRightsFormula;
-                workSheet.Range[$"M{x}"].Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.AntiqueWhite);
-
-                string propertyLandSumFormula = $"=SUM({string.Join(",", propertyEndLinesLandSum)})";
-                workSheet.Range[$"N{x}"].Formula = propertyLandSumFormula;
-                workSheet.Range[$"N{x}"].Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.AntiqueWhite);
-
-                string propertyLandSumAreaFormula = $"=SUM({string.Join(",", propertyEndLineslandSumArea)})";
-                workSheet.Range[$"O{x}"].Formula = propertyLandSumAreaFormula;
-                workSheet.Range[$"O{x}"].Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.AntiqueWhite);
-            }
-
-            workBook.Save();
-            workBook.Close();
-
-            return errormessage;
-        }
 
         // ClosedXML helper methods
         private void setMergeBordersColorAndAlignmentXL(IXLWorksheet workSheet, string rangeStart, string rangeEnd, int row, bool setRowHeight, int rowHeight,
@@ -2396,13 +1584,31 @@ namespace AreaCalculations
             areaAdjRangeStr.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             areaAdjRangeStr.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             areaAdjRangeStr.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            areaAdjRangeStr.Style.Font.Italic = true;
 
-            // Apply borders to the rest of the row (C through O)
+            // Write numeric data to columns C through O
+            if (isLand)
+            {
+                // For land areas, write data to D column and N-O columns
+                workSheet.Cell(x, 4).Value = smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("Area").AsDouble());
+                workSheet.Cell(x, 14).Value = Math.Round(areaSub.LookupParameter("A Instance RLP Area %")?.AsDouble() ?? 0.0, 3);
+                workSheet.Cell(x, 15).Value = smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("A Instance RLP Area").AsDouble());
+            }
+            else
+            {
+                // For regular adjacent areas, write data to C column
+                workSheet.Cell(x, 3).Value = smartRounder.sqFeetToSqMeters(areaSub.LookupParameter("Area").AsDouble());
+            }
+
+            // Apply formatting to the data range (borders and number format only, no italic)
             IXLRange areaAdjRangeDouble = workSheet.Range($"C{x}:O{x}");
             areaAdjRangeDouble.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             areaAdjRangeDouble.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-        }
+            areaAdjRangeDouble.Style.NumberFormat.Format = "0.00";
 
+            // Make columns N and O bold
+            setBoldRangeXL(workSheet, "N", "O", x);
+        }
         private void setSumFormulaExcludingRowsXL(IXLWorksheet workSheet, string column, int row, int startLine, int endLine, List<int> linesToExclude)
         {
             IXLCell cell = workSheet.Cell(row, column);
@@ -2819,7 +2025,7 @@ namespace AreaCalculations
                                 // Apply only outside borders (no inside borders)
                                 blankLineRange.Style.Fill.BackgroundColor = XLColor.LightGray;
                                 blankLineRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                                // Note: By using OutsideBorder and NOT setting InsideBorder, 
+ 
                                 // we get the same effect as the original merge/unmerge trick
 
                                 x++;
@@ -2828,11 +2034,12 @@ namespace AreaCalculations
                                 int startLine = x;
 
                                 // Sort areas for normal properties (lines 1959-1966)
+                                // Fix for .NET 8 OrderBy with negative double values from Revit API
                                 List<Area> sortedAreasNormal = AreasOrganizer[plotName][property]
                                     .Where(area => area.LookupParameter("A Instance Area Category").AsString().ToLower().Equals("самостоятелен обект"))
                                     .Where(area => !area.LookupParameter("A Instance Area Group").AsString().Equals("ЗЕМЯ"))
                                     .OrderBy(area => ReorderEntrance(area.LookupParameter("A Instance Area Entrance").AsString()))
-                                    .ThenBy(area => ExtractLevelHeight(area.Level))
+                                    .ThenBy(area => Convert.ToDouble(ExtractLevelHeight(area.Level)))
                                     .ThenBy(area => area.LookupParameter("Number").AsString())
                                     .ToList();
 
@@ -2844,10 +2051,11 @@ namespace AreaCalculations
                                     areasToSort.AddRange(AreasOrganizer[plotName]["ТРАФ"]);
 
                                 // Sort ground areas (lines 1974-1979)
+                                // Fix for .NET 8 OrderBy with negative double values from Revit API
                                 List<Area> sortedAreasGround = areasToSort
                                     .Where(area => area.LookupParameter("A Instance Area Group").AsString().ToLower().Equals("земя"))
                                     .OrderBy(area => ReorderEntrance(area.LookupParameter("A Instance Area Entrance").AsString()))
-                                    .ThenBy(area => ExtractLevelHeight(area.Level))
+                                    .ThenBy(area => Convert.ToDouble(ExtractLevelHeight(area.Level)))
                                     .ThenBy(area => area.LookupParameter("Number").AsString())
                                     .ToList();
 
@@ -2868,6 +2076,7 @@ namespace AreaCalculations
                                 List<int> linesToExclude = new List<int>();
                                 List<int> linesToExcludeLand = new List<int>();
                                 string levelHeightStr = "";
+
 
                                 // Process each area (line 2000)
                                 foreach (Area area in sortedAreas)
@@ -2895,6 +2104,7 @@ namespace AreaCalculations
                                         // Check and add level section header (lines 2020-2047)
                                         if (!levels.Contains(area.LookupParameter("Level").AsValueString()))
                                         {
+
                                             levels.Add(area.LookupParameter("Level").AsValueString());
                                             double levelHeight = Math.Round(doc.GetElement(area.LookupParameter("Level").AsElementId()).LookupParameter("Elevation").AsDouble() * lengthConvert / 100, 3);
 
@@ -2929,9 +2139,7 @@ namespace AreaCalculations
                                             string areaNumber = area.LookupParameter("Number").AsString() ?? "SOMETHING'S WRONG";
                                             string areaName = area.LookupParameter("Name")?.AsString() ?? "SOMETHING'S WRONG";
                                             double areaArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Gross Area")?.AsDouble() ?? 0.0);
-                                            // TODO: rework properly for adjacent area
                                             object areaSubjected = DBNull.Value;
-                                            // TODO: rework properly for adjacent area
                                             double ACCO = area.LookupParameter("A Coefficient Multiplied")?.AsDouble() ?? 0.0;
                                             double C1C2 = Math.Round(area.LookupParameter("A Instance Price C1/C2")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
                                             double areaCommonPercent = Math.Round(area.LookupParameter("A Instance Common Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
@@ -3069,7 +2277,6 @@ namespace AreaCalculations
                                                 }
                                             }
 
-                                            // Note: Lines 2175-2214 are commented out in original code (special common areas loop)
                                             // This commented section is not implemented as it's disabled in the original
                                         }
                                         else
