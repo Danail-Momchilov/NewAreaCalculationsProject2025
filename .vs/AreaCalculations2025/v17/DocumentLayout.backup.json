@@ -18,8 +18,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -40,7 +44,7 @@
               "RelativeDocumentMoniker": "AreaCalcs\\AreaDictionary.cs",
               "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalcs\\AreaDictionary.cs",
               "RelativeToolTip": "AreaCalcs\\AreaDictionary.cs",
-              "ViewState": "AgIAAEEFAAAAAAAAAADwv/0GAABXAAAAAAAAAA==",
+              "ViewState": "AgIAAMQHAAAAAAAAAAAgwA8JAABgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-01T13:04:11.28Z",
               "EditorCaption": ""
