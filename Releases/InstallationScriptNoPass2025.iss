@@ -4,7 +4,7 @@
 #define MyAppExeName "MyProg-x64.exe"
 
 [Setup]
-AppId={{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}}
+AppId={{D5B48238-4161-4AE2-90F6-BAFE9B3B40D3}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
@@ -15,7 +15,7 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 LicenseFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\LICENSE.txt
 OutputDir=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\Releases
-OutputBaseFilename=IPA-AreaCalculationsV2.0.0NoPass
+OutputBaseFilename=IPA-AreaCalculationsNoPassV2.0.0
 SetupIconFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\installerIcon.ico
 SolidCompression=yes
 WizardStyle=modern
@@ -48,7 +48,7 @@ Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProje
 Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\SixLabors.Fonts.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\System.IO.Packaging.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-; Add-in files for Revit 2025 and 2026
+; Add-in files for 2025 and 2026
 Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2025"; Flags: ignoreversion
 Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2026"; Flags: ignoreversion
 
@@ -67,23 +67,27 @@ Type: files; Name: "C:\ProgramData\Autodesk\Revit\Addins\2025\AreaCalculations.a
 Type: files; Name: "C:\ProgramData\Autodesk\Revit\Addins\2026\AreaCalculations.addin"
 
 [Registry]
+; Clean up any old or duplicate registry entries first
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\IPA-AreaCalculations_is1"; Flags: deletekey
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\IPA-AreaCalculations"; Flags: deletekey
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#MyAppName}"; Flags: deletekey
 
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}_is1"; ValueType: string; ValueName: "DisplayName"; ValueData: "{#MyAppName} {#MyAppVersion}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}_is1"; ValueType: string; ValueName: "UninstallString"; ValueData: "{uninstallexe}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}_is1"; ValueType: string; ValueName: "DisplayVersion"; ValueData: "{#MyAppVersion}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}_is1"; ValueType: string; ValueName: "Publisher"; ValueData: "{#MyAppPublisher}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{75B951C9-A0E1-43AA-BB76-DDEAF1781D38}_is1"; ValueType: string; ValueName: "DisplayIcon"; ValueData: "{app}\installerIcon.ico"
+; Create ONLY the standard Inno Setup registry entry (no custom keys)
+; Inno Setup will automatically create the proper registry entries based on AppId
 
 [Code]
 function InitializeSetup(): Boolean;
 var
   ResultCode: Integer;
+  UninstallPath: String;
 begin
-  if RegKeyExists(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\IPA-AreaCalculations_is1') then
+  // Only uninstall previous 2.x versions using the correct AppId format
+  if RegKeyExists(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{D5B48238-4161-4AE2-90F6-BAFE9B3B40D3}_is1') then
   begin
-    Exec(ExpandConstant('{sys}\msiexec.exe'), '/x{75B951C9-A0E1-43AA-BB76-DDEAF1781D38} /qn', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{D5B48238-4161-4AE2-90F6-BAFE9B3B40D3}_is1', 'UninstallString', UninstallPath) then
+    begin
+      Exec(UninstallPath, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    end;
   end;
   Result := True;
 end;
@@ -92,6 +96,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
+    // Clean up any old duplicate registry entries that might cause duplicate entries in Add/Remove Programs
     RegDeleteKeyIncludingSubkeys(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\IPA-AreaCalculations');
     RegDeleteKeyIncludingSubkeys(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\IPA-AreaCalculations_is1');
   end;

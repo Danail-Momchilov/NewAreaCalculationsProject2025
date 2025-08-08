@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\areacalcs\\areadictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:areacalcs\\areadictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\aboutstack\\resourceinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:aboutstack\\resourceinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\aboutstack\\versioninfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:aboutstack\\versioninfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\aboutstack\\aboutinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:aboutstack\\aboutinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -18,35 +26,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ResourceInfo.cs",
+              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\ResourceInfo.cs",
+              "RelativeDocumentMoniker": "AboutStack\\ResourceInfo.cs",
+              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\ResourceInfo.cs",
+              "RelativeToolTip": "AboutStack\\ResourceInfo.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAswBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T10:59:39.002Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "VersionInfo.cs",
+              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\VersionInfo.cs",
+              "RelativeDocumentMoniker": "AboutStack\\VersionInfo.cs",
+              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\VersionInfo.cs",
+              "RelativeToolTip": "AboutStack\\VersionInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T10:59:27.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AboutInfo.cs",
+              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\AboutInfo.cs",
+              "RelativeDocumentMoniker": "AboutStack\\AboutInfo.cs",
+              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\AboutInfo.cs",
+              "RelativeToolTip": "AboutStack\\AboutInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T10:59:21.343Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "App.cs",
               "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\App.cs",
               "RelativeDocumentMoniker": "App.cs",
               "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\App.cs",
               "RelativeToolTip": "App.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T15:18:58.002Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AreaDictionary.cs",
-              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalcs\\AreaDictionary.cs",
-              "RelativeDocumentMoniker": "AreaCalcs\\AreaDictionary.cs",
-              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalcs\\AreaDictionary.cs",
-              "RelativeToolTip": "AreaCalcs\\AreaDictionary.cs",
-              "ViewState": "AgIAAMQHAAAAAAAAAAAgwA8JAABgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-01T13:04:11.28Z",
+              "WhenOpened": "2025-07-29T15:18:58.002Z",
               "EditorCaption": ""
             }
           ]
