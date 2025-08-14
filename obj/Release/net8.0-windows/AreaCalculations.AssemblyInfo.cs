@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AreaCalculations")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+001bbdd562adbd7e1c127f32c4f6ec5a6347d12d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7864a175c0624c0af399ad83d712a6c069b9f00b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AreaCalculations")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AreaCalculations")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -25,7 +25,7 @@ namespace AreaCalculations
 
 
 
-            // 
+            // create the about stack
             PushButtonData smallButton1 = new PushButtonData("About", "A", assembName, "AreaCalculations.AboutInfo");
             smallButton1.Image = new BitmapImage(new Uri(path + @"\info.png"));
 
