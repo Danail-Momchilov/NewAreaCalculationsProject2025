@@ -94,6 +94,8 @@ NewAreaCalculationsProject/
 
 ### Core Dependencies
 1. **.NET 8** - Target framework (UPGRADED from .NET Framework 4.8)
+   - **CRITICAL**: DO NOT change .NET framework version - Revit 2026 runs on .NET 8
+   - **CRITICAL**: DO NOT modify general project settings without explicit approval
 2. **Autodesk Revit API 2026** - (UPGRADED from Revit API 2023)
    - RevitAPI.dll
    - RevitAPIUI.dll

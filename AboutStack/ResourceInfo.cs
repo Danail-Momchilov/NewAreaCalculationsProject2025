@@ -18,10 +18,12 @@ namespace AreaCalculations
             try
             {
                 TaskDialog dialog = new TaskDialog("Resources");
-                dialog.MainInstruction = "Available resources in our Learning Management System!";
-                dialog.MainContent = "Click 'Open' to launch the course";
+                dialog.MainInstruction = "Available resources for Area Calculations!";
+                dialog.MainContent = "Choose your destiny!";
                 dialog.CommonButtons = TaskDialogCommonButtons.Close;
-                dialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, "Open LMS");
+                dialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, "Open LMS", "Access the online Learning Management System");
+                dialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink2, "Open Resources Folder", "Access local instructions and resources");
+                dialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink3, "Open Sample File", "Open the Revit sample file as detached copy");
 
                 TaskDialogResult result = dialog.Show();
 
@@ -32,6 +34,22 @@ namespace AreaCalculations
                         FileName = "https://moodle.ip-arch.com/course/view.php?id=6",
                         UseShellExecute = true
                     });
+                }
+                else if (result == TaskDialogResult.CommandLink2)
+                {
+                    System.Diagnostics.Process.Start(new ProcessStartInfo
+                    {
+                        FileName = @"T:\05.ISO\03.INSTRUCTIONS\05. AREA CALCULATIONS",
+                        UseShellExecute = true
+                    });
+                }
+                else if (result == TaskDialogResult.CommandLink3)
+                {
+                    ModelPath sampleFilePath = ModelPathUtils.ConvertUserVisiblePathToModelPath(@"T:\05.ISO\03.INSTRUCTIONS\05. AREA CALCULATIONS\02. REVIT SAMPLE FILE\AREACALC SAMPLE FILE_2026.rvt");
+                    OpenOptions openOptions = new OpenOptions();
+                    openOptions.DetachFromCentralOption = DetachFromCentralOption.DetachAndPreserveWorksets;
+                    UIApplication uiApp = commandData.Application;
+                    uiApp.OpenAndActivateDocument(sampleFilePath, openOptions, true);
                 }
 
                 return Result.Succeeded;
