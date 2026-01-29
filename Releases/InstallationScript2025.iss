@@ -1,5 +1,5 @@
 #define MyAppName "IPA-AreaCalculations"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "2.0.1"
 #define MyAppPublisher "IPA Architecture and More"
 #define MyAppExeName "MyProg-x64.exe"
 
@@ -15,7 +15,7 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 LicenseFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\LICENSE.txt
 OutputDir=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\Releases
-OutputBaseFilename=IPA-AreaCalculationsV2.0.0
+OutputBaseFilename=IPA-AreaCalculationsV2.0.1
 SetupIconFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\installerIcon.ico
 Password=ipaMipa
 Encryption=yes

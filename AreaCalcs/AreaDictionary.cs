@@ -1357,10 +1357,17 @@ namespace AreaCalculations
                 {
                     foreach (Area area in AreasOrganizer[plotName][property])
                     {
-                        double calculatedArea = area.LookupParameter("A Instance RLP Area %").AsDouble()
-                            * remainingPlotArea / 100;
+                        if (area.LookupParameter("A Instance Area Group").AsString().ToLower() == "земя")
+                        {
+                            area.LookupParameter("A Instance RLP Area").Set(area.LookupParameter("A Instance Gross Area").AsDouble());
+                        }
+                        else
+                        {
+                            double calculatedArea = area.LookupParameter("A Instance RLP Area %").AsDouble()
+                                * remainingPlotArea / 100;
 
-                        area.LookupParameter("A Instance RLP Area").Set(calculatedArea);
+                            area.LookupParameter("A Instance RLP Area").Set(calculatedArea);
+                        }
                     }
                 }
             }
