@@ -890,7 +890,7 @@ namespace AreaCalculations
                     totalLandAreaShare += listData[9];
                 }
             }
-
+            
             calculateParkingPercentSurplus(percentageDict, commonAreaPercent, totalPercentageShare, 2);
             calculateParkingPercentSurplus(percentageDict, buildingRight, totalBuildingRightShare, 7);
             calculateParkingPercentSurplus(percentageDict, landPercentage, totalLandPercentageShare, 8);

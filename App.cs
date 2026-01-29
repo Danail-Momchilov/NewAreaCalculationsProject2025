@@ -18,7 +18,11 @@ namespace AreaCalculations
 
             // create a tab
             String tabName = "MIPA";
-            application.CreateRibbonTab(tabName);
+            try
+            {
+                application.GetRibbonPanels(tabName);
+            }
+            catch { }            
 
             // creatte a panel
             RibbonPanel areaCalcPanel = application.CreateRibbonPanel(tabName, "Area Calculations");

@@ -1,7 +1,26 @@
-Post-Build:
-if exist "$(AppData)\Autodesk\REVIT\Addins\2021" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2021"
-if exist "$(AppData)\Autodesk\REVIT\Addins\2021" copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2021"
-if exist "$(AppData)\Autodesk\REVIT\Addins\2021" copy "$(ProjectDir)$(OutputPath)\img\*.png" "$(AppData)\Autodesk\REVIT\Addins\2021"
+Post-Build (add to .csproj):
+==============================
+
+1. Add this property inside <PropertyGroup>:
+    <AddinDir>$(AppData)\Autodesk\Revit\Addins\2026\</AddinDir>
+
+2. Add this ItemGroup after </PropertyGroup>:
+  <ItemGroup>
+    <AddinImages Include="$(ProjectDir)img\*.png" />
+    <AddinManifest Include="$(ProjectDir)manifest.addin" />
+  </ItemGroup>
+
+3. Add this Target:
+  <Target Name="CopyToRevitAddins" AfterTargets="Build">
+    <ItemGroup>
+      <OutputDlls Include="$(TargetDir)*.dll" />
+      <OutputJson Include="$(TargetDir)*.deps.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AddinManifest)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(AddinImages)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputDlls)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputJson)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+  </Target>
 
 Debug:
-C:\Program Files\Autodesk\Revit 2021\Revit.exe
+C:\Program Files\Autodesk\Revit 2026\Revit.exe

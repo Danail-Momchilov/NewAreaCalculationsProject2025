@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\aboutstack\\resourceinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:aboutstack\\resourceinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\areacalcs\\areadictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:areacalcs\\areadictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|b:\\06. bim automation\\02. c#\\area calculations\\newareacalculationsproject2025\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,14 +39,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ResourceInfo.cs",
-              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\ResourceInfo.cs",
-              "RelativeDocumentMoniker": "AboutStack\\ResourceInfo.cs",
-              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AboutStack\\ResourceInfo.cs",
-              "RelativeToolTip": "AboutStack\\ResourceInfo.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBgAAACPAAAAAAAAAA==",
+              "Title": "AreaDictionary.cs",
+              "DocumentMoniker": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalcs\\AreaDictionary.cs",
+              "RelativeDocumentMoniker": "AreaCalcs\\AreaDictionary.cs",
+              "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalcs\\AreaDictionary.cs",
+              "RelativeToolTip": "AreaCalcs\\AreaDictionary.cs",
+              "ViewState": "AgIAAIQEAAAAAAAAAAAqwCgJAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T10:59:39.002Z",
+              "WhenOpened": "2026-01-29T14:29:39.048Z",
               "EditorCaption": ""
             },
             {
@@ -57,9 +57,9 @@
               "RelativeDocumentMoniker": "App.cs",
               "ToolTip": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\App.cs",
               "RelativeToolTip": "App.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB0AAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwBgAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T15:18:58.002Z",
+              "WhenOpened": "2026-01-29T14:18:08.518Z",
               "EditorCaption": ""
             }
           ]

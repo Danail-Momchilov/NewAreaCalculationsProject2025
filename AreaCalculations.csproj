@@ -7,17 +7,26 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationManifest>manifest.addin</ApplicationManifest>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PostBuildEvent>
-      set ADDIN_DIR=$(AppData)\Autodesk\Revit\Addins\2026
-
-      if exist "%ADDIN_DIR%" (
-          copy /Y "$(ProjectDir)manifest.addin" "%ADDIN_DIR%\"
-          copy /Y "$(ProjectDir)$(OutputPath)*.dll" "%ADDIN_DIR%\"
-          copy /Y "$(ProjectDir)$(OutputPath)*.deps.json" "%ADDIN_DIR%\"
-          if exist "$(ProjectDir)$(OutputPath)\img" xcopy /Y /I "$(ProjectDir)$(OutputPath)\img\*.png" "%ADDIN_DIR%\img\"
-      )
-    </PostBuildEvent>
+    <AddinDir>$(AppData)\Autodesk\Revit\Addins\2026\</AddinDir>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AddinImages Include="$(ProjectDir)img\*.png" />
+    <AddinManifest Include="$(ProjectDir)manifest.addin" />
+  </ItemGroup>
+
+  <Target Name="CopyToRevitAddins" AfterTargets="Build">
+    <ItemGroup>
+      <OutputDlls Include="$(TargetDir)*.dll" />
+      <OutputPdbs Include="$(TargetDir)*.pdb" />
+      <OutputJson Include="$(TargetDir)*.deps.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AddinManifest)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(AddinImages)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputDlls)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputPdbs)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputJson)" DestinationFolder="$(AddinDir)" SkipUnchangedFiles="true" />
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
