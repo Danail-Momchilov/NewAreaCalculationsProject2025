@@ -43,6 +43,17 @@ namespace AreaCalculations
 
 
 
+            // create Settings button
+            PushButtonData settingsButtonData = new PushButtonData("Settings", "Settings", assembName, "AreaCalculations.SettingsCommand");
+            settingsButtonData.LargeImage = new BitmapImage(new Uri(path + @"\settings.png"));
+            settingsButtonData.ToolTip = "Натиснете този бутон, за да изберете Area Scheme и Phase";
+            settingsButtonData.ToolTipImage = new BitmapImage(new Uri(path + @"\settings.png"));
+
+            areaCalcPanel.AddItem(settingsButtonData);
+            areaCalcPanel.AddSeparator();
+
+
+
             // create PushButon1
             PushButtonData butonData1 = new PushButtonData("Plot\nparameters", "Plot\nparameters", assembName, "AreaCalculations.SiteCalcs");
             butonData1.LargeImage = new BitmapImage(new Uri(path + @"\plotIcon.png"));

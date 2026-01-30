@@ -29,6 +29,9 @@ namespace AreaCalculations
         private readonly double lengthConvert = 30.48;
         private SmartRound smartRounder { get; set; }
         private AritmeticAssistant aritAsist { get; set; }
+        private AreaCalculationsSettings settings { get; set; }
+        private ElementId areaSchemeId { get; set; }
+        private ElementId phaseId { get; set; }
         public string errorMessage { get; set; }
         public Dictionary<string, Dictionary<string, List<Area>>> AreasOrganizer { get; set; }
         public List<string> plotNames { get; set; }
@@ -76,9 +79,20 @@ namespace AreaCalculations
             this.smartRounder = new SmartRound(doc);
             this.aritAsist = new AritmeticAssistant();
 
+            // Load settings for filtering
+            this.settings = SettingsManager.LoadSettings();
+            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+            this.phaseId = !string.IsNullOrEmpty(settings.PhaseId) ? new ElementId(long.Parse(settings.PhaseId)) : null;
+
             ProjectInfo projectInfo = activeDoc.ProjectInformation;
 
-            FilteredElementCollector areasCollector = new FilteredElementCollector(activeDoc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType();
+            // Filter areas by Area Scheme if setting is configured
+            List<Area> areasCollector = new FilteredElementCollector(activeDoc)
+                .OfCategory(BuiltInCategory.OST_Areas)
+                .WhereElementIsNotElementType()
+                .Cast<Area>()
+                .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
+                .ToList();
 
             // construct main AreaOrganizer Dictionary
             foreach (Element elem in areasCollector)
@@ -728,7 +742,8 @@ namespace AreaCalculations
         {
             bool hasAdjRooms = false;
 
-            List<Element> rooms = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType().ToList();
+            List<Element> rooms = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType()
+                .Where(r => phaseId == null || r.get_Parameter(BuiltInParameter.ROOM_PHASE).AsElementId() == phaseId).ToList();
 
             foreach (Element element in rooms)
             {
@@ -814,6 +829,7 @@ namespace AreaCalculations
                 listData.Add(landAreaShare);
             }
         }
+        /* OLD METHOD - COMMENTED OUT FOR REFERENCE
         private Dictionary<List<object>, Room> returnAdjascentRooms(Area area)
         {
             string areaNumber = area.LookupParameter("Number").AsString();
@@ -830,7 +846,8 @@ namespace AreaCalculations
             Dictionary<string, List<object>> keyValuePairs = new Dictionary<string, List<object>>();
 
             List<Room> rooms = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType()
-            .Where(room => room.LookupParameter("A Instance Area Primary").AsString() == areaNumber).Cast<Room>().ToList();
+                .Where(r => phaseId == null || r.get_Parameter(BuiltInParameter.ROOM_PHASE).AsElementId() == phaseId)
+                .Where(room => room.LookupParameter("A Instance Area Primary").AsString() == areaNumber).Cast<Room>().ToList();
 
             // group rooms, based on their Area
             var groupedRooms = rooms.GroupBy(room => Math.Round(room.LookupParameter("Area").AsDouble(), 3));
@@ -854,7 +871,7 @@ namespace AreaCalculations
                 listData.Add(group.Count());
 
                 double percentage = Math.Round(
-                    smartRounder.sqFeetToSqMeters(group.First().LookupParameter("Area").AsDouble()) * 100/areaArea, 
+                    smartRounder.sqFeetToSqMeters(group.First().LookupParameter("Area").AsDouble()) * 100/areaArea,
                     3, MidpointRounding.AwayFromZero);
                 listData.Add(percentage);
 
@@ -872,7 +889,7 @@ namespace AreaCalculations
                     totalPercentageShare += percentageShare;
                 }
             }
-            
+
             // redistribute surplus for percentage coefficients
             calculateParkingPercentSurplus(percentageDict, 100, totalPercentage, 1);
             setParkingShareParameters(percentageDict, area);
@@ -890,7 +907,7 @@ namespace AreaCalculations
                     totalLandAreaShare += listData[9];
                 }
             }
-            
+
             calculateParkingPercentSurplus(percentageDict, commonAreaPercent, totalPercentageShare, 2);
             calculateParkingPercentSurplus(percentageDict, buildingRight, totalBuildingRightShare, 7);
             calculateParkingPercentSurplus(percentageDict, landPercentage, totalLandPercentageShare, 8);
@@ -900,7 +917,7 @@ namespace AreaCalculations
             calculateParkingAreaSurplus(percentageDict, specialCommonArea, totalCommonAreaSpecialShare, 4);
             calculateParkingAreaSurplus(percentageDict, totalCommonArea, totalCommonAreaTotalShare, 5);
             calculateParkingAreaSurplus(percentageDict, landArea, totalLandAreaShare, 9);
-            
+
             // fix eventual total area inaccuracy
             foreach (List<double> listData in percentageDict.Keys)
             {
@@ -960,7 +977,157 @@ namespace AreaCalculations
             }
 
             // sort the flattened dictionary based on room number
-            var sortedFlattenedDict = flattenedDict.OrderBy(kvp => (string)kvp.Key[0]).ToDictionary(kvp => kvp.Key, kvp => kvp.Value); 
+            var sortedFlattenedDict = flattenedDict.OrderBy(kvp => (string)kvp.Key[0]).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            return sortedFlattenedDict;
+        }
+        END OF OLD METHOD */
+
+        private Dictionary<List<object>, Room> returnAdjascentRooms(Area area)
+        {
+            string areaNumber = area.LookupParameter("Number").AsString();
+            double areaArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Gross Area")?.AsDouble() ?? 0.0);
+            double commonAreaPercent = Math.Round(area.LookupParameter("A Instance Common Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
+            double commonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area")?.AsDouble() ?? 0.0);
+            double specialCommonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area Special")?.AsDouble() ?? 0.0);
+            double totalArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Total Area")?.AsDouble() ?? 0.0);
+            double buildingRight = Math.Round(area.LookupParameter("A Instance Building Permit %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
+            double landPercentage = Math.Round(area.LookupParameter("A Instance RLP Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
+            double landArea = Math.Round(area.LookupParameter("A Instance RLP Area")?.AsDouble() / areaConvert ?? 0.0, 3, MidpointRounding.AwayFromZero);
+
+            Dictionary<string, List<object>> keyValuePairs = new Dictionary<string, List<object>>();
+
+            List<Room> rooms = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType()
+                .Where(r => phaseId == null || r.get_Parameter(BuiltInParameter.ROOM_PHASE).AsElementId() == phaseId)
+                .Where(room => room.LookupParameter("A Instance Area Primary").AsString() == areaNumber).Cast<Room>().ToList();
+
+            // group rooms, based on their Area
+            var groupedRooms = rooms.GroupBy(room => Math.Round(room.LookupParameter("Area").AsDouble(), 3));
+
+            // create a dictionary from these groups
+            Dictionary<List<double>, List<Room>> percentageDict = new Dictionary<List<double>, List<Room>>();
+            double totalPercentage = 0;
+            double totalPercentageShare = 0;
+            double totalBuildingRightShare = 0;
+            double totalLandPercentageShare = 0;
+            double totalCommonAreaShare = 0;
+            double totalCommonAreaSpecialShare = 0;
+            double totalLandAreaShare = 0;
+
+            foreach (var group in groupedRooms)
+            {
+                // generate a list with all the calculated data
+                List<double> listData = new List<double>();
+                listData.Add(group.Count());
+
+                double percentage = Math.Round(
+                    smartRounder.sqFeetToSqMeters(group.First().LookupParameter("Area").AsDouble()) * 100/areaArea,
+                    3, MidpointRounding.AwayFromZero);
+                listData.Add(percentage);
+
+                double percentageShare = Math.Round(percentage * commonAreaPercent / 100, 3, MidpointRounding.AwayFromZero);
+                listData.Add(percentageShare);
+
+                // add the list to the dictionary as a key
+                percentageDict.Add(listData, new List<Room>());
+
+                // add all the rooms in the group to the same key
+                foreach (Room room in group)
+                {
+                    percentageDict[listData].Add(room);
+                    totalPercentage += percentage;
+                    totalPercentageShare += percentageShare;
+                }
+            }
+
+            // redistribute surplus for percentage coefficients
+            calculateParkingPercentSurplus(percentageDict, 100, totalPercentage, 1);
+            setParkingShareParameters(percentageDict, area);
+
+            foreach (List<double> listData in percentageDict.Keys)
+            {
+                foreach (Room room in percentageDict[listData])
+                {
+                    totalBuildingRightShare += listData[7];
+                    totalLandPercentageShare += listData[8];
+                    totalCommonAreaShare += listData[3];
+                    totalCommonAreaSpecialShare += listData[4];
+                    totalLandAreaShare += listData[9];
+                }
+            }
+
+            calculateParkingPercentSurplus(percentageDict, commonAreaPercent, totalPercentageShare, 2);
+            calculateParkingPercentSurplus(percentageDict, buildingRight, totalBuildingRightShare, 7);
+            calculateParkingPercentSurplus(percentageDict, landPercentage, totalLandPercentageShare, 8);
+
+            // redistribute surplus for area coefficients (common area and special common area separately)
+            calculateParkingAreaSurplus(percentageDict, commonArea, totalCommonAreaShare, 3);
+            calculateParkingAreaSurplus(percentageDict, specialCommonArea, totalCommonAreaSpecialShare, 4);
+            calculateParkingAreaSurplus(percentageDict, landArea, totalLandAreaShare, 9);
+
+            // calculate total common area as simple sum of common area + special common area (NO surplus redistribution)
+            // also fix eventual total area inaccuracy
+            foreach (List<double> listData in percentageDict.Keys)
+            {
+                // total common area = common area share + special common area share (after their individual surplus redistribution)
+                listData[5] = listData[3] + listData[4];
+
+                double roomArea = Math.Round(percentageDict[listData].First().Area / areaConvert, 2, MidpointRounding.AwayFromZero);
+                listData[6] = roomArea + listData[5];
+            }
+
+            // construct new dictionary
+            Dictionary<List<object>, Room> flattenedDict = new Dictionary<List<object>, Room>();
+
+            // iterate through the percentageDict to populate the new dictionary
+            foreach (var kvp in percentageDict)
+            {
+                List<double> keyList = kvp.Key;
+                List<Room> roomsList = kvp.Value;
+
+                double percentage = keyList[1];
+                double percentageShare = keyList[2];
+                double commonAreaShare = keyList[3];
+                double commonAreaSpecialShare = keyList[4];
+                double commonAreaTotalShare = keyList[5];
+                double totalAreaShare = keyList[6];
+                double buildingRightShare = keyList[7];
+                double landPercentageShare = keyList[8];
+                double landAreaShare = keyList[9];
+
+                foreach (Room room in roomsList)
+                {
+                    // create the new key with the room number and percentage
+                    List<object> newKey = new List<object>
+                    {
+                        room.LookupParameter("Number").AsString(),
+                        percentage,
+                        percentageShare,
+                        commonAreaShare,
+                        commonAreaSpecialShare,
+                        commonAreaTotalShare,
+                        totalAreaShare,
+                        buildingRightShare,
+                        landPercentageShare,
+                        landAreaShare
+                    };
+
+                    // replace 0.0 values with nulls
+                    for (int i = 0; i < newKey.Count; i++)
+                    {
+                        if (newKey[i] is double && (double)newKey[i] == 0.0)
+                        {
+                            newKey[i] = DBNull.Value;
+                        }
+                    }
+
+                    // Add to the new dictionary
+                    flattenedDict[newKey] = room;
+                }
+            }
+
+            // sort the flattened dictionary based on room number
+            var sortedFlattenedDict = flattenedDict.OrderBy(kvp => (string)kvp.Key[0]).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             return sortedFlattenedDict;
         }        
@@ -1070,10 +1237,9 @@ namespace AreaCalculations
         {
             transaction.Start();
 
-            foreach (Element collectorElement in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().ToList())
+            foreach (Area area in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType()
+                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList())
             {
-                Area area = collectorElement as Area;
-
                 if (area.LookupParameter("A Instance Area Category").AsString() == "САМОСТОЯТЕЛЕН ОБЕКТ"
                     && !(area.LookupParameter("A Instance Area Primary").HasValue && area.LookupParameter("A Instance Area Primary").AsString() != ""))
                 {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Document = Autodesk.Revit.DB.Document;
 
@@ -16,12 +17,14 @@ namespace AreaCalculations
     {
         public List<double> build { get; set; }
         public List<double> totalBuild { get; set; }
-        public FilteredElementCollector areasCollector { get; set; }
+        public List<Area> areasCollector { get; set; }
         public Document doc { get; set; }
         Transaction transaction { get; set; }
         private double areaConvert = 10.7639104167096;
         private SmartRound smartRound { get; set; }
         private AritmeticAssistant aritAsist { get; set; }
+        private AreaCalculationsSettings settings { get; set; }
+        private ElementId areaSchemeId { get; set; }
         private bool updateIfNoValue(Parameter param, double value)
         {
             if (param.HasValue && param.AsValueString() != "" && param.AsDouble() != 0)
@@ -38,12 +41,17 @@ namespace AreaCalculations
             this.smartRound = new SmartRound(document);
             this.aritAsist = new AritmeticAssistant();
 
+            // Load settings for filtering
+            this.settings = SettingsManager.LoadSettings();
+            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+
             ParameterValueProvider provider = new ParameterValueProvider(new ElementId(BuiltInParameter.ROOM_AREA));
             FilterNumericRuleEvaluator evaluator = new FilterNumericGreater();
             double epsilon = 0.0001;
             ElementParameterFilter filter = new ElementParameterFilter(new FilterDoubleRule(provider, evaluator, epsilon, 1E-6));
 
-            this.areasCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter);
+            this.areasCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
+                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
 
             this.transaction = new Transaction(doc, "Update Areas");
         }
@@ -53,12 +61,17 @@ namespace AreaCalculations
             this.smartRound = new SmartRound(document);
             this.aritAsist = new AritmeticAssistant();
 
+            // Load settings for filtering
+            this.settings = SettingsManager.LoadSettings();
+            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+
             ParameterValueProvider provider = new ParameterValueProvider(new ElementId(BuiltInParameter.ROOM_AREA));
             FilterNumericRuleEvaluator evaluator = new FilterNumericGreater();
             double epsilon = 0.0001;
             ElementParameterFilter filter = new ElementParameterFilter(new FilterDoubleRule(provider, evaluator, epsilon, 1E-6));
 
-            this.areasCollector = new FilteredElementCollector(document).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter);
+            this.areasCollector = new FilteredElementCollector(document).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
+                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
 
             this.transaction = new Transaction(document, "Update Areas");
 
@@ -234,8 +247,9 @@ namespace AreaCalculations
                             double epsilon = 0.0001;
                             ElementParameterFilter filter = new ElementParameterFilter(new FilterDoubleRule(provider, evaluator, epsilon, 1E-6));
 
-                            FilteredElementCollector mainAreasCollector = new FilteredElementCollector(doc).
-                                OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter);
+                            List<Area> mainAreasCollector = new FilteredElementCollector(doc)
+                                .OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
+                                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
 
                             foreach (Area mainArea in mainAreasCollector)
                             {

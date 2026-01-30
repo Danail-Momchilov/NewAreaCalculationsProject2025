@@ -16,6 +16,15 @@ namespace AreaCalculations
         {
             try
             {
+                // Check if settings are configured
+                if (!SettingsManager.SettingsExist())
+                {
+                    TaskDialog settingsWarning = new TaskDialog("Настройки");
+                    settingsWarning.MainInstruction = "Моля, първо конфигурирайте настройките (Area Scheme и Phase) чрез бутона 'Settings'.";
+                    settingsWarning.Show();
+                    return Result.Failed;
+                }
+
                 UIDocument uidoc = commandData.Application.ActiveUIDocument;
                 Document doc = uidoc.Document;
 

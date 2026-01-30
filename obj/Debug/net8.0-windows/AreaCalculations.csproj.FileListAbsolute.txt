@@ -28,3 +28,5 @@ B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\ob
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\refint\AreaCalculations.dll
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\AreaCalculations.pdb
 B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\ref\AreaCalculations.dll
+B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\Settings\SettingsWindow.g.cs
+B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\obj\Debug\net8.0-windows\Settings\SettingsWindow.baml
