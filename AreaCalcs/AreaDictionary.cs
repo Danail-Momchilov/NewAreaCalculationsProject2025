@@ -1779,6 +1779,9 @@ namespace AreaCalculations
 
             // Make columns N and O bold
             setBoldRangeXL(workSheet, "N", "O", x);
+
+            // Write Element ID to column S
+            workSheet.Cell(x, 19).Value = areaSub.Id.Value;
         }
         private void setSumFormulaExcludingRowsXL(IXLWorksheet workSheet, string column, int row, int startLine, int endLine, List<int> linesToExclude)
         {
@@ -1819,6 +1822,7 @@ namespace AreaCalculations
                     workSheet.Columns(7, 15).Width = 10;
                     workSheet.Column(17).Width = 15;
                     workSheet.Column(18).Width = 10;
+                    workSheet.Column(19).Width = 12;
 
                     int x = 1;
 
@@ -2320,6 +2324,7 @@ namespace AreaCalculations
 
                                             workSheet.Cell(x, 17).Value = $"КОТА {levelHeightStr}";
                                             workSheet.Cell(x, 18).Value = $"{Math.Round(100 * (areaCommonAreaSpecial + areaCommonArea) / areaTotalArea, 3, MidpointRounding.AwayFromZero)}";
+                                            workSheet.Cell(x, 19).Value = area.Id.Value;
                                         }
                                         catch
                                         {
@@ -2428,6 +2433,9 @@ namespace AreaCalculations
                                                 areaAdjRangeDouble.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
                                                 setExcelDecimalsFormattingXL(workSheet, x);
+
+                                                // Write Room Element ID to column S
+                                                workSheet.Cell(x, 19).Value = room.Id.Value;
 
                                                 linesToExclude.Add(x);
                                                 linesToExcludeLand.Add(x);
