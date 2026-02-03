@@ -156,6 +156,13 @@ The current implementation uses Microsoft Office Interop, which has several limi
 - **Configuration**: Debug and Release configurations available
 - **Output**: Library (.dll) for Revit to load
 
+## Development Workflow
+
+**Hot Reload**: During development, Visual Studio runs in debug mode with Revit as an external application. Use **hot reload** to apply code changes instead of rebuilding. Rebuilding restarts Revit, so only rebuild when absolutely necessary (e.g., changes to project structure, adding new files, or changes that hot reload cannot handle).
+
+- **Prefer hot reload** for code logic changes within existing methods
+- **Rebuild only when required** for structural changes (new classes, new files, signature changes)
+
 ## Known Issues (Post .NET 8 / Revit 2026 Upgrade)
 
 ### Floating-Point Precision in Area Display

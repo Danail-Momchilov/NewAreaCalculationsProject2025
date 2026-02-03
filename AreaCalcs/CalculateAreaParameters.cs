@@ -61,6 +61,18 @@ namespace AreaCalculations
                     return Result.Failed;
                 }
 
+                // check if all required Area parameters are present
+                string areaParamsError = AreaDictionary.CheckAreaParameters(doc);
+                if (areaParamsError != "")
+                {
+                    TaskDialog areaParamsErrorDialog = new TaskDialog("Липсващи параметри");
+                    areaParamsErrorDialog.MainInstruction = areaParamsError;
+                    areaParamsErrorDialog.Show();
+                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "warnings.txt");
+                    File.WriteAllText(path, areaParamsError);
+                    return Result.Failed;
+                }
+
                 // area dictionary instance and additional plot parameters variables
                 AreaDictionary areaDict = new AreaDictionary(doc);
                 // calculate C1/C2 coefficients

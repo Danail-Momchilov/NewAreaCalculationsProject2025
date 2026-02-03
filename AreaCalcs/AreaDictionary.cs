@@ -54,6 +54,56 @@ namespace AreaCalculations
         public double areasCount { get; set; }
         public double missingAreasCount { get; set; }
         public string missingAreasData { get; set; }
+
+        public static string CheckAreaParameters(Document doc)
+        {
+            string missingParams = "";
+
+            // Get a sample Area to check for parameters
+            Area sampleArea = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Areas)
+                .WhereElementIsNotElementType()
+                .Cast<Area>()
+                .FirstOrDefault();
+
+            if (sampleArea == null)
+            {
+                return "Не са открити Area обекти в модела.\n";
+            }
+
+            // List of all required custom Area parameters
+            List<string> requiredParameters = new List<string>
+            {
+                "A Coefficient Multiplied",
+                "A Instance Area Category",
+                "A Instance Area Entrance",
+                "A Instance Area Group",
+                "A Instance Area Location",
+                "A Instance Area Plot",
+                "A Instance Area Primary",
+                "A Instance Building Permit %",
+                "A Instance Common Area",
+                "A Instance Common Area %",
+                "A Instance Common Area Special",
+                "A Instance Gross Area",
+                "A Instance Price C1/C2",
+                "A Instance Property Common Area %",
+                "A Instance RLP Area",
+                "A Instance RLP Area %",
+                "A Instance Total Area"
+            };
+
+            foreach (string paramName in requiredParameters)
+            {
+                if (sampleArea.LookupParameter(paramName) == null)
+                {
+                    missingParams += $"Липсва параметър '{paramName}' за Area категорията. Моля, заредете го като Instance параметър за Areas.\n";
+                }
+            }
+
+            return missingParams;
+        }
+
         public AreaDictionary(Document activeDoc)
         {
             this.doc = activeDoc;

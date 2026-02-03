@@ -28,6 +28,47 @@ namespace AreaCalculations
         double areaConvert = 10.7639104167096;
         double lengthConvert = 30.48;
 
+        private AreaCalculationsSettings settings { get; set; }
+        private ElementId phaseId { get; set; }
+        private Dictionary<ElementId, int> phaseOrder { get; set; }
+
+        private void BuildPhaseOrder(Document doc)
+        {
+            phaseOrder = new Dictionary<ElementId, int>();
+            PhaseArray phases = doc.Phases;
+            for (int i = 0; i < phases.Size; i++)
+            {
+                phaseOrder[phases.get_Item(i).Id] = i;
+            }
+        }
+
+        private bool ElementExistsInPhase(Element element)
+        {
+            if (phaseId == null) return true;
+
+            ElementId createdPhase = element.CreatedPhaseId;
+            ElementId demolishedPhase = element.DemolishedPhaseId;
+
+            // Element must be created in the selected phase or an earlier one
+            if (!phaseOrder.ContainsKey(createdPhase) || !phaseOrder.ContainsKey(phaseId))
+                return false;
+
+            if (phaseOrder[createdPhase] > phaseOrder[phaseId])
+                return false;
+
+            // If demolished, it must be demolished in a phase AFTER the selected one
+            if (demolishedPhase != ElementId.InvalidElementId)
+            {
+                if (!phaseOrder.ContainsKey(demolishedPhase))
+                    return false;
+
+                if (phaseOrder[demolishedPhase] <= phaseOrder[phaseId])
+                    return false;
+            }
+
+            return true;
+        }
+
         private string CheckGreeneryParameters(Document doc, int plotCount)
         {
             string missingParams = "";
@@ -94,15 +135,25 @@ namespace AreaCalculations
                 this.smartRounder = new SmartRound(doc);
                 this.aritAsist = new AritmeticAssistant();
 
+                // Load settings and build phase order for filtering
+                this.settings = SettingsManager.LoadSettings();
+                this.phaseId = !string.IsNullOrEmpty(settings.PhaseId) ? new ElementId(long.Parse(settings.PhaseId)) : null;
+                BuildPhaseOrder(doc);
+
                 // Validate parameters first
                 errorReport = CheckGreeneryParameters(doc, plotNames.Count);
                 if (!string.IsNullOrEmpty(errorReport))
                     return;
 
-                FilteredElementCollector allFloors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Floors).WhereElementIsNotElementType();
-                FilteredElementCollector allToposolids = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Toposolid).WhereElementIsNotElementType();
-                FilteredElementCollector allWalls = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls).WhereElementIsNotElementType();
-                FilteredElementCollector allRailings = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StairsRailing).WhereElementIsNotElementType();
+                // Collect elements and filter by phase
+                List<Floor> allFloors = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Floors).WhereElementIsNotElementType()
+                    .Cast<Floor>().Where(f => ElementExistsInPhase(f)).ToList();
+                List<Toposolid> allToposolids = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Toposolid).WhereElementIsNotElementType()
+                    .Cast<Toposolid>().Where(t => ElementExistsInPhase(t)).ToList();
+                List<Wall> allWalls = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls).WhereElementIsNotElementType()
+                    .Cast<Wall>().Where(w => ElementExistsInPhase(w)).ToList();
+                List<Railing> allRailings = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_StairsRailing).WhereElementIsNotElementType()
+                    .Cast<Railing>().Where(r => ElementExistsInPhase(r)).ToList();
 
                 if (plotNames.Count == 1)
                 {

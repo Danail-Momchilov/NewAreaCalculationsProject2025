@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Interop;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -16,6 +17,8 @@ namespace AreaCalculations
                 Document doc = uidoc.Document;
 
                 SettingsWindow window = new SettingsWindow(doc);
+                WindowInteropHelper helper = new WindowInteropHelper(window);
+                helper.Owner = commandData.Application.MainWindowHandle;
                 window.ShowDialog();
 
                 if (window.SettingsSaved)

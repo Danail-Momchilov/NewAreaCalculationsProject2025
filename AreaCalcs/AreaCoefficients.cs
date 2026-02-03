@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Interop;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -30,10 +31,23 @@ namespace AreaCalculations
 
                 // create and initiate the xaml window
                 AreaCoefficientsWindow window = new AreaCoefficientsWindow();
+                WindowInteropHelper helper = new WindowInteropHelper(window);
+                helper.Owner = commandData.Application.MainWindowHandle;
                 window.ShowDialog();
 
                 // create area collect
                 AreaCollection areaUpdater = new AreaCollection(doc);
+
+                // check if A Coefficient Multiplied parameter exists on Areas
+                Area sampleArea = areaUpdater.areasCollector.FirstOrDefault();
+                if (sampleArea != null && sampleArea.LookupParameter("A Coefficient Multiplied") == null)
+                {
+                    TaskDialog paramError = new TaskDialog("Липсващ параметър");
+                    paramError.MainInstruction = "Липсва параметър 'A Coefficient Multiplied' за Area категорията. Моля, заредете го като Instance параметър за Areas.";
+                    paramError.Show();
+                    return Result.Failed;
+                }
+
                 int count;
 
                 // update area coefficients, based on the xaml windows' data
@@ -45,9 +59,9 @@ namespace AreaCalculations
                 // output reports
                 TaskDialog report = new TaskDialog("Report");
                 if (count > 0)
-                    report.MainInstruction = $"Успешно бяха обновени коефициентите на {count} 'Area' обекти! За всички останали е обновен само коефициент 'A Coefficient Multiplied' :*";
+                    report.MainInstruction = $"Успешно беше обновен параметър 'A Coefficient Multiplied' за {count} 'Area' обекта!";
                 else
-                    report.MainInstruction = "Не са открити обекти от тип 'Area' с непопълнени параметри за коефициентите. Обновен е единствено 'A Coefficient Multiplied'";
+                    report.MainInstruction = "Не са открити 'Area' обекти с непопълнен параметър 'A Coefficient Multiplied'.";
                 report.Show();
 
                 return Result.Succeeded;

@@ -271,142 +271,65 @@ namespace AreaCalculations
         {
             int i = 0;
 
-            double ACOR = areaCoefficientsDict["ACOR"];
-            double ACLE = areaCoefficientsDict["ACLE"];
-            double ACLO = areaCoefficientsDict["ACLO"];
-            double ACHE = areaCoefficientsDict["ACHE"];
-            double ACRO = areaCoefficientsDict["ACRO"];
-            double ACSP = areaCoefficientsDict["ACSP"];
-            double ACZO = areaCoefficientsDict["ACZO"];
-            double ACCO = areaCoefficientsDict["ACCO"];
-            double ACSTS = areaCoefficientsDict["ACSTS"];
-            double ACST = areaCoefficientsDict["ACST"];
-            double ACGAP = areaCoefficientsDict["ACGAP"];
-            double ACGA = areaCoefficientsDict["ACGA"];
+            double ACM = areaCoefficientsDict["ACM"];
+            double ACMGP = areaCoefficientsDict["ACMGP"];
+            double ACMSM = areaCoefficientsDict["ACMSM"];
 
             transaction.Start();
 
-            foreach (var area in areasCollector)
+            foreach (Area area in areasCollector)
             {
-                bool wasUpdated = false;
-
                 if (area.LookupParameter("Area").AsString() != "Not Placed")
                 {
-                    double totalMultiplied = 0;
+                    Parameter coeffParam = area.LookupParameter("A Coefficient Multiplied");
 
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Orientation (Ки)"), ACOR);
-                    totalMultiplied = area.LookupParameter("A Coefficient Orientation (Ки)").AsDouble();
+                    // Only update if no value exists
+                    if (!coeffParam.HasValue || coeffParam.AsDouble() == 0)
+                    {
+                        string areaName = area.LookupParameter("Name").AsString().ToLower();
 
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Level (Кв)"), ACLE);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Level (Кв)").AsDouble());
+                        if (new List<string> { "склад", "мазе" }.Any(keyword => areaName.Contains(keyword)))
+                            coeffParam.Set(ACMSM);
+                        else if (new List<string> { "гараж", "паркинг" }.Any(keyword => areaName.Contains(keyword)))
+                            coeffParam.Set(ACMGP);
+                        else
+                            coeffParam.Set(ACM);
 
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Location (Км)"), ACLO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Location (Км)").AsDouble());
-
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Height (Кив)"), ACHE);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Height (Кив)").AsDouble());
-
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Roof (Кпп)"), ACRO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble());
-
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Special (Кок)"), ACSP);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Special (Кок)").AsDouble());
-
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Zones (Кк)"), ACZO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Zones (Кк)").AsDouble());
-
-                    wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Correction"), ACCO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Correction").AsDouble());
-
-                    if (new List<string> { "склад", "мазе" }.Contains(area.LookupParameter("Name").AsString().ToLower()))
-                        wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Storage (Ксп)"), ACSTS);
-                    else
-                        wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Storage (Ксп)"), ACST);                        
-
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble());
-
-                    if (new List<string> { "гараж", "паркинг" }.Contains(area.LookupParameter("Name").AsString().ToLower()))
-                        wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Garage (Кпг)"), ACGAP);
-                    else
-                        wasUpdated = updateIfNoValue(area.LookupParameter("A Coefficient Garage (Кпг)"), ACGA);
-
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Multiplied").Set(totalMultiplied);
+                        i++;
+                    }
                 }
-                if (wasUpdated)
-                    i += 1;
             }
 
             transaction.Commit();
             return i;
         }
+
         public int updateAreaCoefficientsOverride(Dictionary<string, double> areaCoefficientsDict)
         {
             int i = 0;
 
-            double ACOR = areaCoefficientsDict["ACOR"];
-            double ACLE = areaCoefficientsDict["ACLE"];
-            double ACLO = areaCoefficientsDict["ACLO"];
-            double ACHE = areaCoefficientsDict["ACHE"];
-            double ACRO = areaCoefficientsDict["ACRO"];
-            double ACSP = areaCoefficientsDict["ACSP"];
-            double ACZO = areaCoefficientsDict["ACZO"];
-            double ACCO = areaCoefficientsDict["ACCO"];
-            double ACSTS = areaCoefficientsDict["ACSTS"];
-            double ACST = areaCoefficientsDict["ACST"];
-            double ACGAP = areaCoefficientsDict["ACGAP"];
-            double ACGA = areaCoefficientsDict["ACGA"];
+            double ACM = areaCoefficientsDict["ACM"];
+            double ACMGP = areaCoefficientsDict["ACMGP"];
+            double ACMSM = areaCoefficientsDict["ACMSM"];
 
             transaction.Start();
 
-            foreach (var area in areasCollector)
+            foreach (Area area in areasCollector)
             {
                 if (area.LookupParameter("Area").AsString() != "Not Placed")
                 {
-                    double totalMultiplied = 0;
+                    Parameter coeffParam = area.LookupParameter("A Coefficient Multiplied");
+                    string areaName = area.LookupParameter("Name").AsString().ToLower();
 
-                    area.LookupParameter("A Coefficient Orientation (Ки)").Set(ACOR);
-                    totalMultiplied = area.LookupParameter("A Coefficient Orientation (Ки)").AsDouble();
-
-                    area.LookupParameter("A Coefficient Level (Кв)").Set(ACLE);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Level (Кв)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Location (Км)").Set(ACLO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Location (Км)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Height (Кив)").Set(ACHE);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Height (Кив)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Roof (Кпп)").Set(ACRO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Roof (Кпп)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Special (Кок)").Set(ACSP);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Special (Кок)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Zones (Кк)").Set(ACZO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Zones (Кк)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Correction").Set(ACCO);
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Correction").AsDouble());
-
-                    if (new List<string> { "склад", "мазе" }.Any(keyword => area.LookupParameter("Name").AsString().ToLower().Contains(keyword)))
-                        area.LookupParameter("A Coefficient Storage (Ксп)").Set(ACSTS);
+                    if (new List<string> { "склад", "мазе" }.Any(keyword => areaName.Contains(keyword)))
+                        coeffParam.Set(ACMSM);
+                    else if (new List<string> { "гараж", "паркинг" }.Any(keyword => areaName.Contains(keyword)))
+                        coeffParam.Set(ACMGP);
                     else
-                        area.LookupParameter("A Coefficient Storage (Ксп)").Set(ACST);
+                        coeffParam.Set(ACM);
 
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Storage (Ксп)").AsDouble());
-
-                    if (new List<string> { "гараж", "паркинг" }.Any(keyword => area.LookupParameter("Name").AsString().ToLower().Contains(keyword)))
-                        area.LookupParameter("A Coefficient Garage (Кпг)").Set(ACGAP);
-                    else
-                        area.LookupParameter("A Coefficient Garage (Кпг)").Set(ACGA);
-
-                    totalMultiplied = aritAsist.multiplyValues(totalMultiplied, area.LookupParameter("A Coefficient Garage (Кпг)").AsDouble());
-
-                    area.LookupParameter("A Coefficient Multiplied").Set(totalMultiplied);
+                    i++;
                 }
-                i += 1;
             }
 
             transaction.Commit();

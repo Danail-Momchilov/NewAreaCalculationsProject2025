@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using TaskDialog = Autodesk.Revit.UI.TaskDialog;
 using System;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,6 +66,18 @@ namespace AreaCalculations
                     return Result.Failed;
                 }
 
+                // check if all required Area parameters are present
+                string areaParamsError = AreaDictionary.CheckAreaParameters(doc);
+                if (areaParamsError != "")
+                {
+                    TaskDialog areaParamsErrorDialog = new TaskDialog("Липсващи параметри");
+                    areaParamsErrorDialog.MainInstruction = areaParamsError;
+                    areaParamsErrorDialog.Show();
+                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "warnings.txt");
+                    File.WriteAllText(path, areaParamsError);
+                    return Result.Failed;
+                }
+
                 // area dictionary instance and additional plot parameters variables
                 AreaDictionary areaDict = new AreaDictionary(doc);
 
@@ -82,6 +95,8 @@ namespace AreaCalculations
                 openFileDialog.Multiselect = false;
 
                 SheetNameWindow window = new SheetNameWindow();
+                WindowInteropHelper helper = new WindowInteropHelper(window);
+                helper.Owner = commandData.Application.MainWindowHandle;
                 window.ShowDialog();
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
