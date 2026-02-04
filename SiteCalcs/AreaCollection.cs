@@ -130,6 +130,10 @@ namespace AreaCalculations
             List<string> AreaCategoryValues = new List<string> { "ИЗКЛЮЧЕНА ОТ ОЧ", "НЕПРИЛОЖИМО", "ОБЩА ЧАСТ", "САМОСТОЯТЕЛЕН ОБЕКТ" };
             List<string> AreaLocationValues = new List<string> { "НАДЗЕМНА", "НАЗЕМНА", "НЕПРИЛОЖИМО", "ПОДЗЕМНА", "ПОЛУПОДЗЕМНА" };
 
+            // Track common groups for cross-validation
+            HashSet<string> commonAreaGroups = new HashSet<string>();
+            HashSet<string> individualAreaGroups = new HashSet<string>();
+
             List<string> plotTypesValues = new List<string>();
 
             if (new List<string> { "СТАНДАРТНО УПИ", "ЪГЛОВО УПИ", "УПИ В ДВЕ ЗОНИ" }.Contains(projInfo.LookupParameter("Plot Type").AsString()))
@@ -235,6 +239,22 @@ namespace AreaCalculations
                             $"Използвайте 'A Instance Area Common Group' за специални общи части.\n";
                     }
 
+                    // Collect common groups for cross-validation
+                    if (area.LookupParameter("A Instance Area Common Group").HasValue
+                        && area.LookupParameter("A Instance Area Common Group").AsString() != "")
+                    {
+                        string commonGroup = area.LookupParameter("A Instance Area Common Group").AsString();
+
+                        if (area.LookupParameter("A Instance Area Category").AsString() == "ОБЩА ЧАСТ")
+                        {
+                            commonAreaGroups.Add(commonGroup);
+                        }
+                        else if (area.LookupParameter("A Instance Area Category").AsString() == "САМОСТОЯТЕЛЕН ОБЕКТ")
+                        {
+                            individualAreaGroups.Add(commonGroup);
+                        }
+                    }
+
                     if (area.LookupParameter("A Instance Area Primary").HasValue
                         && area.LookupParameter("A Instance Area Primary").AsString() != ""
                         && area.LookupParameter("A Instance Area Primary").AsString() == area.LookupParameter("Number").AsString())
@@ -272,6 +292,25 @@ namespace AreaCalculations
                                 $"/ id: {area.Id.ToString()} / Дадената Area е подчинена на несъществуваща такава\n";
                         }
                     }
+                }
+            }
+
+            // Cross-validate common groups - check for orphaned groups
+            foreach (string group in individualAreaGroups)
+            {
+                if (!commonAreaGroups.Contains(group))
+                {
+                    errorMessage += $"Предупреждение: Група '{group}' съдържа САМОСТОЯТЕЛНИ ОБЕКТИ, " +
+                        $"но няма ОБЩА ЧАСТ със същата група. Специалната обща част няма да бъде разпределена.\n";
+                }
+            }
+
+            foreach (string group in commonAreaGroups)
+            {
+                if (!individualAreaGroups.Contains(group))
+                {
+                    errorMessage += $"Предупреждение: Група '{group}' съдържа ОБЩА ЧАСТ, " +
+                        $"но няма САМОСТОЯТЕЛНИ ОБЕКТИ със същата група. Специалната обща част няма да бъде разпределена.\n";
                 }
             }
 

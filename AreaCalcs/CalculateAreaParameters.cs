@@ -73,6 +73,18 @@ namespace AreaCalculations
                     return Result.Failed;
                 }
 
+                // validate common groups for special common areas
+                string commonGroupWarnings = AreaDictionary.ValidateCommonGroups(doc);
+                if (commonGroupWarnings != "")
+                {
+                    TaskDialog commonGroupWarningsDialog = new TaskDialog("Предупреждения за групи");
+                    commonGroupWarningsDialog.MainInstruction = commonGroupWarnings;
+                    commonGroupWarningsDialog.Show();
+                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "warnings.txt");
+                    File.WriteAllText(path, commonGroupWarnings);
+                    return Result.Failed;
+                }
+
                 // area dictionary instance and additional plot parameters variables
                 AreaDictionary areaDict = new AreaDictionary(doc);
                 // calculate C1/C2 coefficients
@@ -88,7 +100,9 @@ namespace AreaCalculations
                 // calculate A Instance RLP Area
                 areaDict.calculateRlpArea();
                 // calculate A Instance Common Area Special
-                areaDict.calculateSpecialCommonAreas();                
+                areaDict.calculateSpecialCommonAreas();
+                // calculate A Instance Common Area Special %
+                areaDict.calculateSpecialCommonAreaPercentage();
                 // after calculations are complete, redistribute the final surplus left
                 areaDict.redistributeSurplus();
                 // calculate A Instance Total Area
