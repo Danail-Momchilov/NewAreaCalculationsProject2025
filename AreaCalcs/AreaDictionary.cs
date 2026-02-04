@@ -76,6 +76,7 @@ namespace AreaCalculations
             {
                 "A Coefficient Multiplied",
                 "A Instance Area Category",
+                "A Instance Area Common Group",
                 "A Instance Area Entrance",
                 "A Instance Area Group",
                 "A Instance Area Location",
@@ -386,9 +387,10 @@ namespace AreaCalculations
 
                     foreach (Area area in AreasOrganizer[plotName][plotProperty])
                     {
+                        // Special common areas are identified by having A Instance Area Common Group set
                         if (area.LookupParameter("A Instance Area Category").AsString().ToLower() == "обща част"
-                            && (area.LookupParameter("A Instance Area Primary").HasValue
-                            && area.LookupParameter("A Instance Area Primary").AsString() != ""))
+                            && area.LookupParameter("A Instance Area Common Group").HasValue
+                            && area.LookupParameter("A Instance Area Common Group").AsString() != "")
                         {
                             propertyCommonAreasSpecial[plotName][plotProperty] += smartRounder.sqFeetToSqMeters(area.LookupParameter("Area").AsDouble());
                         }
@@ -1387,44 +1389,43 @@ namespace AreaCalculations
                     // check all areas from a given dictionary
                     foreach (Area area in AreasOrganizer[plotName][property])
                     {
-                        // check if there is a common area that is set to adjascent to another one
+                        // check if there is a special common area (identified by A Instance Area Common Group)
                         if (area.LookupParameter("A Instance Area Category").AsString().ToLower() == "обща част" &&
-                            area.LookupParameter("A Instance Area Primary").HasValue && area.LookupParameter("A Instance Area Primary").AsString() != "")
+                            area.LookupParameter("A Instance Area Common Group").HasValue &&
+                            area.LookupParameter("A Instance Area Common Group").AsString() != "")
                         {
-                            // if such is found, find all of the areas, it is set to be adjascent to
-                            string[] mainAreaNumbers = area.LookupParameter("A Instance Area Primary").AsString().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries)
-                                .Select(s => s.Trim())
-                                .ToArray();
+                            // get the group identifier for this special common area
+                            string commonGroup = area.LookupParameter("A Instance Area Common Group").AsString();
 
                             double sumC1C2 = 0;
                             List<Area> mainAreaElements = new List<Area>();
 
-                            // find all the areas it is adjascent to and calculate their total C1C2 and add them to a list
-                            foreach (string mainAreaNumber in mainAreaNumbers)
+                            // find all САМОСТОЯТЕЛЕН ОБЕКТ areas with the same group value
+                            foreach (Area mainArea in AreasOrganizer[plotName][property])
                             {
-                                bool wafFound = false;
-
-                                foreach (Area mainArea in AreasOrganizer[plotName][property])
+                                // must be САМОСТОЯТЕЛЕН ОБЕКТ, have matching group, and not be a secondary object
+                                if (mainArea.LookupParameter("A Instance Area Category").AsString() == "САМОСТОЯТЕЛЕН ОБЕКТ" &&
+                                    mainArea.LookupParameter("A Instance Area Common Group").HasValue &&
+                                    mainArea.LookupParameter("A Instance Area Common Group").AsString() == commonGroup &&
+                                    !(mainArea.LookupParameter("A Instance Area Primary").HasValue &&
+                                      mainArea.LookupParameter("A Instance Area Primary").AsString() != ""))
                                 {
-                                    if (mainArea.LookupParameter("Number").AsString() == mainAreaNumber)
-                                    {
-                                        wafFound = true;
-                                        sumC1C2 += mainArea.LookupParameter("A Instance Price C1/C2").AsDouble();
-                                        mainAreaElements.Add(mainArea);
-                                    }
+                                    sumC1C2 += mainArea.LookupParameter("A Instance Price C1/C2").AsDouble();
+                                    mainAreaElements.Add(mainArea);
                                 }
+                            }
 
-                                if (!wafFound)
-                                {
-                                    errorMessage += $"Area {area.Name} | Id:{area.Id} " +
-                                        $"е зададена като подчинена на такава с несъществуващ номер: {mainAreaNumber}\n";
-                                }
+                            // validate that at least one matching area was found
+                            if (mainAreaElements.Count == 0)
+                            {
+                                errorMessage += $"Area {area.Name} | Id:{area.Id} " +
+                                    $"има зададена група '{commonGroup}', но не са открити САМОСТОЯТЕЛНИ ОБЕКТИ със същата група\n";
                             }
 
                             // for each area of the list, calculate its Special Common Area
                             foreach (Area mainArea in mainAreaElements)
                             {
-                                double percentage = Math.Round(mainArea.LookupParameter("A Instance Price C1/C2").AsDouble() * 100 / sumC1C2, 
+                                double percentage = Math.Round(mainArea.LookupParameter("A Instance Price C1/C2").AsDouble() * 100 / sumC1C2,
                                     3, MidpointRounding.AwayFromZero);
 
                                 double areaToAdd = smartRounder.sqFeetToSqMeters(area.Area) * percentage / 100 * areaConvert;

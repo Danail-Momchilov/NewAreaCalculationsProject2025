@@ -224,8 +224,18 @@ namespace AreaCalculations
                         errorMessage += $"Грешка: Area {area.LookupParameter("Number").AsString()} " +
                             $"/ id: {area.Id.ToString()} / Непопълнен параметър: Number\n";
                     }
-                    
-                    if (area.LookupParameter("A Instance Area Primary").HasValue 
+
+                    // Validate that common areas don't have A Instance Area Primary set
+                    if (area.LookupParameter("A Instance Area Category").AsString() == "ОБЩА ЧАСТ"
+                        && area.LookupParameter("A Instance Area Primary").HasValue
+                        && area.LookupParameter("A Instance Area Primary").AsString() != "")
+                    {
+                        errorMessage += $"Грешка: Area {area.LookupParameter("Number").AsString()} " +
+                            $"/ id: {area.Id.ToString()} / Обща част не може да има стойност за 'A Instance Area Primary'. " +
+                            $"Използвайте 'A Instance Area Common Group' за специални общи части.\n";
+                    }
+
+                    if (area.LookupParameter("A Instance Area Primary").HasValue
                         && area.LookupParameter("A Instance Area Primary").AsString() != ""
                         && area.LookupParameter("A Instance Area Primary").AsString() == area.LookupParameter("Number").AsString())
                     {
