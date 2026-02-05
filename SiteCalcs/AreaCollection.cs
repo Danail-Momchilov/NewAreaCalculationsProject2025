@@ -352,7 +352,6 @@ namespace AreaCalculations
             transaction.Commit();
             return i;
         }
-
         public int updateAreaCoefficientsOverride(Dictionary<string, double> areaCoefficientsDict)
         {
             int i = 0;

@@ -28,6 +28,18 @@ namespace AreaCalculations
                 UIDocument uidoc = commandData.Application.ActiveUIDocument;
                 Document doc = uidoc.Document;
 
+                // Check if required Area parameters are loaded
+                string areaParamErrors = AreaDictionary.CheckAreaParameters(doc);
+                if (areaParamErrors != "")
+                {
+                    TaskDialog areaParamError = new TaskDialog("Липсващи Area параметри");
+                    areaParamError.MainInstruction = areaParamErrors;
+                    areaParamError.Show();
+                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "warnings.txt");
+                    File.WriteAllText(path, areaParamErrors);
+                    return Result.Failed;
+                }
+
                 ProjInfoUpdater ProjInfo = new ProjInfoUpdater(doc);
 
                 // check if all parameters are loaded in Project Info

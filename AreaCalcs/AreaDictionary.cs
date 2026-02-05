@@ -947,8 +947,9 @@ namespace AreaCalculations
             foreach (List<object> calculations in adjascentRooms.Keys)
                 totalAdjascentRooms += smartRounder.sqFeetToSqMeters(adjascentRooms[calculations].Area);
 
-            if (totalAdjascentRooms != totalAdjascentAreas)
-                errormessage = $"Area {mainArea.Name} | Id: {mainArea.Id} | Сумата от площите на нейните подчинени Rooms и Areas се разминава. Моля да я проверите\n";
+            if (Math.Abs(totalAdjascentRooms - totalAdjascentAreas) > 1E-6)
+                errormessage = $"Area {mainArea.Name} | Id: {mainArea.Id} | Сумата от площите на нейните подчинени " +
+                    $"Rooms и Areas се разминава. Моля да я проверите\n";
 
             return errormessage;
         }
@@ -1823,8 +1824,8 @@ namespace AreaCalculations
                 }
             }
         }
-        private void setMergeBordersColorAndAlignmentXL(IXLWorksheet workSheet, string rangeStart, string rangeEnd, int row, bool setRowHeight, int rowHeight,
-            bool wrapText, bool setVerticalTop, bool colorWhite, bool colorGrey, bool setHorizontalCenter)
+        private void setMergeBordersColorAndAlignmentXL(IXLWorksheet workSheet, string rangeStart, string rangeEnd, int row, bool setRowHeight, 
+            int rowHeight, bool wrapText, bool setVerticalTop, bool colorWhite, bool colorGrey, bool setHorizontalCenter)
         {
             IXLRange mergeRange = workSheet.Range($"{rangeStart}{row}:{rangeEnd}{row}");
             mergeRange.Merge();
@@ -1895,7 +1896,7 @@ namespace AreaCalculations
 
             if (!string.IsNullOrEmpty(note))
             {
-                workSheet.Cell(row, 11).Value = note;
+                workSheet.Cell(row, 13).Value = note;
             }
 
             workSheet.Cell(row, 2).Style.NumberFormat.Format = "0.00";
@@ -2033,7 +2034,7 @@ namespace AreaCalculations
                         workSheet.Cell(x, 2).Value = smartRounder.sqFeetToSqMeters(plotAreasImp[plotName]);
                         workSheet.Cell(x, 3).Value = "кв.м.";
                         workSheet.Cell(x, 5).Value = "Самостоятелни обекти и паркоместа:";
-                        workSheet.Cell(x, 11).Value = "Забележки:";
+                        workSheet.Cell(x, 13).Value = "Забележки:";
                         workSheet.Cell(x, 2).Style.NumberFormat.Format = "0.00";
                         workSheet.Cell(x, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                         workSheet.Range($"A{x}:Q{x}").Style.Font.Bold = true;
@@ -2047,18 +2048,21 @@ namespace AreaCalculations
                             "Апартаменти:", 0, "от площта на общите части са приспаднати XX.XX кв.м.");
 
                         x++;
-                        writePlotMetricRowXL(workSheet, x, "РЗП (подземна):", Math.Round(plotUndergroundAreas[plotName], 2, MidpointRounding.AwayFromZero), "Магазини:", 0);
+                        writePlotMetricRowXL(workSheet, x, "РЗП (подземна):", Math.Round(plotUndergroundAreas[plotName], 2, 
+                            MidpointRounding.AwayFromZero), "Магазини:", 0);
 
                         x++;
                         writePlotMetricRowXL(workSheet, x, "РЗП общо:",
-                            Math.Round(plotUndergroundAreas[plotName], 2, MidpointRounding.AwayFromZero) + Math.Round(plotTotalBuild[plotName], 2, MidpointRounding.AwayFromZero),
-                            "Офиси", 0);
+                            Math.Round(plotUndergroundAreas[plotName], 2, MidpointRounding.AwayFromZero) + Math.Round(plotTotalBuild[plotName], 2, 
+                            MidpointRounding.AwayFromZero), "Офиси", 0);
 
                         x++;
-                        writePlotMetricRowXL(workSheet, x, "Общо СО", Math.Round(plotIndividualAreas[plotName], 2, MidpointRounding.AwayFromZero), "Гаражи", 0);
+                        writePlotMetricRowXL(workSheet, x, "Общо СО", Math.Round(plotIndividualAreas[plotName], 2, 
+                            MidpointRounding.AwayFromZero), "Гаражи", 0);
 
                         x++;
-                        writePlotMetricRowXL(workSheet, x, "Общо ОЧ", Math.Round(plotCommonAreas[plotName], 2, MidpointRounding.AwayFromZero), "Складове", 0);
+                        writePlotMetricRowXL(workSheet, x, "Общо ОЧ", Math.Round(plotCommonAreas[plotName], 2, 
+                            MidpointRounding.AwayFromZero), "Складове", 0);
 
                         x++;
                         writePlotMetricRowXL(workSheet, x, "Земя към СО:",
@@ -2079,12 +2083,13 @@ namespace AreaCalculations
 
                         foreach (string property in plotProperties[plotName])
                         {
-                            if (!property.Contains("+") && !property.ToLower().Contains("траф") && !(property.ToLower().Equals("земя") && areAllLandAreasAdjascent(plotName)))
+                            if (!property.Contains("+") && !property.ToLower().Contains("траф") 
+                                && !(property.ToLower().Equals("земя") && areAllLandAreasAdjascent(plotName)))
                             {
                                 x += 2;
                                 workSheet.Cell(x, 1).Value = $"ПЛОЩООБРАЗУВАНЕ САМОСТОЯТЕЛНИ ОБЕКТИ - {property}";
 
-                                setMergeBordersColorAndAlignmentXL(workSheet, "A", "Q", x, true, 35, false, true, false, true, true);
+                                setMergeBordersColorAndAlignmentXL(workSheet, "A", "Q", x, false, 35, false, true, false, true, true);
 
                                 x++;
                                 workSheet.Cell(x, 1).Value = $"ПЛОЩ СО: {Math.Round(propertyIndividualAreas[plotName][property], 2)} кв.м";
@@ -2096,7 +2101,7 @@ namespace AreaCalculations
                                 individualRange.Style.Font.Bold = true;
                                 individualRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                                 individualRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-                                workSheet.Row(x).Height = 35;
+                                // workSheet.Row(x).Height = 35;
                                 individualRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
 
                                 x++;
@@ -2110,7 +2115,7 @@ namespace AreaCalculations
                                 propertyDataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                                 propertyDataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                                 propertyDataRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-                                workSheet.Row(x).Height = 35;
+                                // workSheet.Row(x).Height = 35;
                                 propertyDataRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
 
                                 x++;
@@ -2123,7 +2128,7 @@ namespace AreaCalculations
                                 commonLabelRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                                 commonLabelRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                                 commonLabelRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-                                workSheet.Row(x).Height = 35;
+                                // workSheet.Row(x).Height = 35;
                                 commonLabelRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
                                 commonLabelRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
@@ -2154,8 +2159,8 @@ namespace AreaCalculations
                                 // parameterNamesRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
                                 parameterNamesRange.Style.Font.Bold = true;
                                 
-                                workSheet.Row(x-1).Height = 35;
-                                workSheet.Row(x).Height = 45;
+                                // workSheet.Row(x-1).Height = 35;
+                                workSheet.Row(x).Height = 35;
 
                                 workSheet.Cell(x-1, 1).Value = workSheet.Cell(x, 1).Value;
                                 workSheet.Cell(x, 1).Value = "";
@@ -2228,6 +2233,7 @@ namespace AreaCalculations
                                 IXLRange commonMerge = workSheet.Range($"H{x}:I{x}");
                                 commonMerge.Merge();
                                 commonMerge.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                                commonMerge.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                                 commonMerge.Style.Font.Bold = true;
                                 commonMerge.Style.Alignment.WrapText = true;
                                 setAllRangeBordersXL(commonMerge);
@@ -2235,12 +2241,14 @@ namespace AreaCalculations
                                 IXLRange specialCommonPercentRange = workSheet.Range($"J{x}:L{x}");
                                 specialCommonPercentRange.Merge();
                                 specialCommonPercentRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                                specialCommonPercentRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                                 specialCommonPercentRange.Style.Font.Bold = true;
                                 specialCommonPercentRange.Style.Alignment.WrapText = true;
                                 setAllRangeBordersXL(specialCommonPercentRange);
 
                                 IXLRange totalCommonRange = workSheet.Range($"M{x}:M{x}");
                                 totalCommonRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                                totalCommonRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                                 totalCommonRange.Style.Font.Bold = true;
                                 totalCommonRange.Style.Alignment.WrapText = true;
                                 setAllRangeBordersXL(totalCommonRange);
@@ -2290,6 +2298,7 @@ namespace AreaCalculations
                                 parametersTypeRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                                 parametersTypeRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                                 parametersTypeRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                                parametersTypeRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
                                 x++;
                                 IXLRange blankLineRange = workSheet.Range($"A{x}:Q{x}");
@@ -2446,6 +2455,7 @@ namespace AreaCalculations
                                             if (!string.IsNullOrEmpty(areaCommonGroup))
                                             {
                                                 workSheet.Cell(x, 10).Value = areaCommonGroup;
+                                                workSheet.Cell(x, 10).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                                             }
 
                                             IXLRange cellRangeDouble = workSheet.Range($"C{x}:Q{x}");
