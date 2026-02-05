@@ -43,13 +43,25 @@ namespace AreaCalculations
 
 
 
-            // create Settings button
+            // create Settings dropdown
+            PulldownButtonData settingsDropdownData = new PulldownButtonData("SettingsDropdown", "Settings");
+            settingsDropdownData.LargeImage = new BitmapImage(new Uri(path + @"\settings.png"));
+            settingsDropdownData.ToolTip = "Настройки и инструменти за миграция";
+
+            PulldownButton settingsDropdown = areaCalcPanel.AddItem(settingsDropdownData) as PulldownButton;
+
+            // Settings button (main)
             PushButtonData settingsButtonData = new PushButtonData("Settings", "Settings", assembName, "AreaCalculations.SettingsCommand");
             settingsButtonData.LargeImage = new BitmapImage(new Uri(path + @"\settings.png"));
             settingsButtonData.ToolTip = "Натиснете този бутон, за да изберете Area Scheme и Phase";
-            settingsButtonData.ToolTipImage = new BitmapImage(new Uri(path + @"\settings.png"));
+            settingsDropdown.AddPushButton(settingsButtonData);
 
-            areaCalcPanel.AddItem(settingsButtonData);
+            // Migrate Common Groups button
+            PushButtonData migrateButtonData = new PushButtonData("MigrateGroups", "Migrate Common Groups", assembName, "AreaCalculations.MigrateCommonGroups");
+            migrateButtonData.LargeImage = new BitmapImage(new Uri(path + @"\settings.png"));
+            migrateButtonData.ToolTip = "Мигрирайте специалните общи части от стария към новия формат (A Instance Area Primary -> A Instance Area Common Group)";
+            settingsDropdown.AddPushButton(migrateButtonData);
+
             areaCalcPanel.AddSeparator();
 
 
