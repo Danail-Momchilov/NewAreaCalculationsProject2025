@@ -40,6 +40,22 @@ namespace AreaCalculations
                     .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
                     .ToList();
 
+                // Validate required parameters exist
+                Area sampleArea = allAreas.FirstOrDefault();
+                if (sampleArea != null)
+                {
+                    if (sampleArea.LookupParameter("A Instance Area Common Group") == null)
+                    {
+                        TaskDialog.Show("Липсващ параметър", "Липсва параметър 'A Instance Area Common Group' за Area категорията. Моля, заредете го като Instance параметър за Areas.");
+                        return Result.Failed;
+                    }
+                    if (sampleArea.LookupParameter("A Instance Area Primary") == null)
+                    {
+                        TaskDialog.Show("Липсващ параметър", "Липсва параметър 'A Instance Area Primary' за Area категорията. Моля, заредете го като Instance параметър за Areas.");
+                        return Result.Failed;
+                    }
+                }
+
                 // Build lookup: AreaNumber -> Area (for САМОСТОЯТЕЛЕН ОБЕКТ)
                 Dictionary<string, Area> areaNumberLookup = new Dictionary<string, Area>();
                 foreach (Area area in allAreas)
@@ -239,14 +255,21 @@ namespace AreaCalculations
                         string label = groupLabels[group].ToString();
                         HashSet<string> primaries = groupToPrimaries[group];
 
-                        // Set group on ОБЩА ЧАСТ areas
+                        // Set group on ОБЩА ЧАСТ areas and reset their Primary parameter
                         foreach (Area commonArea in group)
                         {
-                            Parameter param = commonArea.LookupParameter("A Instance Area Common Group");
-                            if (param != null && !param.IsReadOnly)
+                            Parameter groupParam = commonArea.LookupParameter("A Instance Area Common Group");
+                            if (groupParam != null && !groupParam.IsReadOnly)
                             {
-                                param.Set(label);
+                                groupParam.Set(label);
                                 updatedCommonAreas++;
+
+                                // Reset A Instance Area Primary after migration
+                                Parameter primaryParam = commonArea.LookupParameter("A Instance Area Primary");
+                                if (primaryParam != null && !primaryParam.IsReadOnly)
+                                {
+                                    primaryParam.Set("");
+                                }
                             }
                         }
 

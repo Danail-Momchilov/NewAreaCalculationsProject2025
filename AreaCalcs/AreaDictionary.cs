@@ -972,6 +972,7 @@ namespace AreaCalculations
             double commonAreaPercent = Math.Round(area.LookupParameter("A Instance Common Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
             double commonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area")?.AsDouble() ?? 0.0);
             double specialCommonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area Special")?.AsDouble() ?? 0.0);
+            double specialCommonAreaPercent = Math.Round(area.LookupParameter("A Instance Common Area Special %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
             double totalCommonArea = commonArea + specialCommonArea;
             double totalArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Total Area")?.AsDouble() ?? 0.0);
             double buildingRight = Math.Round(area.LookupParameter("A Instance Building Permit %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
@@ -1002,6 +1003,9 @@ namespace AreaCalculations
 
                 double landAreaShare = Math.Round(percentage * landArea / 100, 2, MidpointRounding.AwayFromZero);
                 listData.Add(landAreaShare);
+
+                double specialCommonPercentShare = Math.Round(percentage * specialCommonAreaPercent / 100, 3, MidpointRounding.AwayFromZero);
+                listData.Add(specialCommonPercentShare);
             }
         }
         private Dictionary<List<object>, Room> returnAdjascentRooms(Area area)
@@ -1011,6 +1015,7 @@ namespace AreaCalculations
             double commonAreaPercent = Math.Round(area.LookupParameter("A Instance Common Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
             double commonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area")?.AsDouble() ?? 0.0);
             double specialCommonArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Common Area Special")?.AsDouble() ?? 0.0);
+            double specialCommonAreaPercent = Math.Round(area.LookupParameter("A Instance Common Area Special %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
             double totalArea = smartRounder.sqFeetToSqMeters(area.LookupParameter("A Instance Total Area")?.AsDouble() ?? 0.0);
             double buildingRight = Math.Round(area.LookupParameter("A Instance Building Permit %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
             double landPercentage = Math.Round(area.LookupParameter("A Instance RLP Area %")?.AsDouble() ?? 0.0, 3, MidpointRounding.AwayFromZero);
@@ -1034,6 +1039,7 @@ namespace AreaCalculations
             double totalCommonAreaShare = 0;
             double totalCommonAreaSpecialShare = 0;
             double totalLandAreaShare = 0;
+            double totalSpecialCommonPercentShare = 0;
 
             foreach (var group in groupedRooms)
             {
@@ -1074,12 +1080,14 @@ namespace AreaCalculations
                     totalCommonAreaShare += listData[3];
                     totalCommonAreaSpecialShare += listData[4];
                     totalLandAreaShare += listData[9];
+                    totalSpecialCommonPercentShare += listData[10];
                 }
             }
 
             calculateParkingPercentSurplus(percentageDict, commonAreaPercent, totalPercentageShare, 2);
             calculateParkingPercentSurplus(percentageDict, buildingRight, totalBuildingRightShare, 7);
             calculateParkingPercentSurplus(percentageDict, landPercentage, totalLandPercentageShare, 8);
+            calculateParkingPercentSurplus(percentageDict, specialCommonAreaPercent, totalSpecialCommonPercentShare, 10);
 
             // redistribute surplus for area coefficients (common area and special common area separately)
             calculateParkingAreaSurplus(percentageDict, commonArea, totalCommonAreaShare, 3);
@@ -1115,6 +1123,7 @@ namespace AreaCalculations
                 double buildingRightShare = keyList[7];
                 double landPercentageShare = keyList[8];
                 double landAreaShare = keyList[9];
+                double specialCommonPercentShare = keyList[10];
 
                 foreach (Room room in roomsList)
                 {
@@ -1125,6 +1134,7 @@ namespace AreaCalculations
                         percentage,
                         percentageShare,
                         commonAreaShare,
+                        specialCommonPercentShare,
                         commonAreaSpecialShare,
                         commonAreaTotalShare,
                         totalAreaShare,
@@ -2558,7 +2568,7 @@ namespace AreaCalculations
                                                 object[] roomData = new object[] {
                                                     smartRounder.sqFeetToSqMeters(room.LookupParameter("Area").AsDouble()),
                                                     DBNull.Value, DBNull.Value, DBNull.Value,
-                                                    key[1], key[2], key[3], key[4], key[5], key[6], key[7], key[8], key[9], DBNull.Value, DBNull.Value};
+                                                    key[1], key[2], key[3], DBNull.Value, key[4], key[5], key[6], key[7], key[8], key[9], key[10]};
 
                                                 for (int col = 0; col < roomData.Length; col++)
                                                 {

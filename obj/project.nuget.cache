@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "E3Rb1Pq41UI=",
+  "dgSpecHash": "7C0+3BLXNIM=",
   "success": true,
-  "projectFilePath": "B:\\06. BIM AUTOMATION\\02. C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalculations.csproj",
+  "projectFilePath": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\AreaCalculations.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\closedxml\\0.105.0\\closedxml.0.105.0.nupkg.sha512",
     "C:\\Users\\Danail.Momchilov\\.nuget\\packages\\closedxml.parser\\2.0.0\\closedxml.parser.2.0.0.nupkg.sha512",
