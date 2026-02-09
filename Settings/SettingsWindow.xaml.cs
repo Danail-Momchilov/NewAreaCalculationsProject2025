@@ -68,12 +68,12 @@ namespace AreaCalculations
         {
             AreaCalculationsSettings settings = SettingsManager.LoadSettings();
 
-            if (!string.IsNullOrEmpty(settings.AreaSchemeId))
+            if (!string.IsNullOrEmpty(settings.AreaSchemeName))
             {
                 for (int i = 0; i < AreaSchemeComboBox.Items.Count; i++)
                 {
                     ComboBoxItem item = AreaSchemeComboBox.Items[i] as ComboBoxItem;
-                    if (item != null && item.Tag.ToString() == settings.AreaSchemeId)
+                    if (item != null && item.Content.ToString() == settings.AreaSchemeName)
                     {
                         AreaSchemeComboBox.SelectedIndex = i;
                         break;
@@ -81,12 +81,12 @@ namespace AreaCalculations
                 }
             }
 
-            if (!string.IsNullOrEmpty(settings.PhaseId))
+            if (!string.IsNullOrEmpty(settings.PhaseName))
             {
                 for (int i = 0; i < PhaseComboBox.Items.Count; i++)
                 {
                     ComboBoxItem item = PhaseComboBox.Items[i] as ComboBoxItem;
-                    if (item != null && item.Tag.ToString() == settings.PhaseId)
+                    if (item != null && item.Content.ToString() == settings.PhaseName)
                     {
                         PhaseComboBox.SelectedIndex = i;
                         break;
@@ -108,9 +108,7 @@ namespace AreaCalculations
 
             AreaCalculationsSettings settings = new AreaCalculationsSettings
             {
-                AreaSchemeId = selectedScheme.Tag.ToString(),
                 AreaSchemeName = selectedScheme.Content.ToString(),
-                PhaseId = selectedPhase.Tag.ToString(),
                 PhaseName = selectedPhase.Content.ToString()
             };
 

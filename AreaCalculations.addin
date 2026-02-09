@@ -11,7 +11,7 @@
     <VendorDescription>Danail Momchilov</VendorDescription>
 
     <Description>Automated area calculations for residential projects</Description>
-    <Text>AreaCalc 2.0</Text>
+    <Text>AreaCalc 2.1.1</Text>
     <VisibilityMode>AlwaysVisible</VisibilityMode>
     <RevitVersion>2025</RevitVersion>
     <RevitVersion>2026</RevitVersion>

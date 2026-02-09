@@ -19,17 +19,17 @@ namespace AreaCalculations
                 UIDocument uidoc = commandData.Application.ActiveUIDocument;
                 Document doc = uidoc.Document;
 
-                // Check if settings are configured
-                if (!SettingsManager.SettingsExist())
+                // Resolve settings for current project
+                string settingsError;
+                ResolvedSettings resolved = SettingsManager.ResolveSettings(doc, out settingsError);
+                if (resolved == null)
                 {
-                    TaskDialog.Show("Настройки", "Моля, първо конфигурирайте настройките (Area Scheme и Phase) чрез бутона 'Settings'.");
+                    TaskDialog.Show("Настройки", settingsError);
                     return Result.Failed;
                 }
 
-                // Load settings for filtering
-                AreaCalculationsSettings settings = SettingsManager.LoadSettings();
-                ElementId areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
-                ElementId phaseId = !string.IsNullOrEmpty(settings.PhaseId) ? new ElementId(long.Parse(settings.PhaseId)) : null;
+                ElementId areaSchemeId = resolved.AreaSchemeId;
+                ElementId phaseId = resolved.PhaseId;
 
                 // Get all areas filtered by Area Scheme
                 List<Area> allAreas = new FilteredElementCollector(doc)
@@ -79,7 +79,7 @@ namespace AreaCalculations
 
                 if (commonAreasWithPrimary.Count == 0)
                 {
-                    TaskDialog.Show("Информация", "Не са открити ОБЩА ЧАСТ области с попълнен параметър 'A Instance Area Primary'.");
+                    TaskDialog.Show("Информация", "Не са открити ОБЩА ЧАСТ обекти с попълнен параметър 'A Instance Area Primary'.");
                     return Result.Succeeded;
                 }
 

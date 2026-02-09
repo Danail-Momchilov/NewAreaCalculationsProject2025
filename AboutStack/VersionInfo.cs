@@ -16,7 +16,7 @@ namespace AreaCalculations
         {
             try
             {
-                TaskDialog.Show("Version", "IPA Area Calculations V2.0.1");
+                TaskDialog.Show("Version", "IPA Area Calculations V2.1.1");
 
                 return Result.Succeeded;
             }

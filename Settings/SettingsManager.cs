@@ -1,15 +1,22 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using Autodesk.Revit.DB;
 
 namespace AreaCalculations
 {
     public class AreaCalculationsSettings
     {
-        public string AreaSchemeId { get; set; }
         public string AreaSchemeName { get; set; }
-        public string PhaseId { get; set; }
         public string PhaseName { get; set; }
+    }
+
+    public class ResolvedSettings
+    {
+        public ElementId AreaSchemeId { get; set; }
+        public ElementId PhaseId { get; set; }
     }
 
     public static class SettingsManager
@@ -51,9 +58,53 @@ namespace AreaCalculations
             catch { }
         }
 
-        public static bool SettingsExist()
+        public static ResolvedSettings ResolveSettings(Document doc, out string error)
         {
-            return File.Exists(SettingsFile);
+            error = null;
+
+            if (!File.Exists(SettingsFile))
+            {
+                error = "Моля, първо конфигурирайте настройките (Area Scheme и Phase) чрез бутона 'Settings'.";
+                return null;
+            }
+
+            AreaCalculationsSettings settings = LoadSettings();
+
+            if (string.IsNullOrEmpty(settings.AreaSchemeName) || string.IsNullOrEmpty(settings.PhaseName))
+            {
+                error = "Моля, първо конфигурирайте настройките (Area Scheme и Phase) чрез бутона 'Settings'.";
+                return null;
+            }
+
+            // Resolve AreaScheme by name
+            AreaScheme areaScheme = new FilteredElementCollector(doc)
+                .OfClass(typeof(AreaScheme))
+                .Cast<AreaScheme>()
+                .FirstOrDefault(s => s.Name == settings.AreaSchemeName);
+
+            if (areaScheme == null)
+            {
+                error = $"Area Scheme '{settings.AreaSchemeName}' не е намерен в текущия проект. Моля, преконфигурирайте настройките чрез бутона 'Settings'.";
+                return null;
+            }
+
+            // Resolve Phase by name
+            Phase phase = new FilteredElementCollector(doc)
+                .OfClass(typeof(Phase))
+                .Cast<Phase>()
+                .FirstOrDefault(p => p.Name == settings.PhaseName);
+
+            if (phase == null)
+            {
+                error = $"Phase '{settings.PhaseName}' не е намерена в текущия проект. Моля, преконфигурирайте настройките чрез бутона 'Settings'.";
+                return null;
+            }
+
+            return new ResolvedSettings
+            {
+                AreaSchemeId = areaScheme.Id,
+                PhaseId = phase.Id
+            };
         }
     }
 }

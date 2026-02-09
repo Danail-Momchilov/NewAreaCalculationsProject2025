@@ -28,7 +28,6 @@ namespace AreaCalculations
         double areaConvert = 10.7639104167096;
         double lengthConvert = 30.48;
 
-        private AreaCalculationsSettings settings { get; set; }
         private ElementId phaseId { get; set; }
         private Dictionary<ElementId, int> phaseOrder { get; set; }
 
@@ -135,9 +134,10 @@ namespace AreaCalculations
                 this.smartRounder = new SmartRound(doc);
                 this.aritAsist = new AritmeticAssistant();
 
-                // Load settings and build phase order for filtering
-                this.settings = SettingsManager.LoadSettings();
-                this.phaseId = !string.IsNullOrEmpty(settings.PhaseId) ? new ElementId(long.Parse(settings.PhaseId)) : null;
+                // Resolve settings for current project
+                string settingsError;
+                ResolvedSettings resolved = SettingsManager.ResolveSettings(doc, out settingsError);
+                this.phaseId = resolved?.PhaseId;
                 BuildPhaseOrder(doc);
 
                 // Validate parameters first

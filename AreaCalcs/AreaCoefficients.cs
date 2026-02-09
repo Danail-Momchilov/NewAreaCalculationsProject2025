@@ -17,17 +17,17 @@ namespace AreaCalculations
         {
             try
             {
-                // Check if settings are configured
-                if (!SettingsManager.SettingsExist())
-                {
-                    TaskDialog settingsWarning = new TaskDialog("Настройки");
-                    settingsWarning.MainInstruction = "Моля, първо конфигурирайте настройките (Area Scheme и Phase) чрез бутона 'Settings'.";
-                    settingsWarning.Show();
-                    return Result.Failed;
-                }
-
                 UIDocument uidoc = commandData.Application.ActiveUIDocument;
                 Document doc = uidoc.Document;
+
+                // Resolve settings for current project
+                string settingsError;
+                ResolvedSettings resolved = SettingsManager.ResolveSettings(doc, out settingsError);
+                if (resolved == null)
+                {
+                    TaskDialog.Show("Настройки", settingsError);
+                    return Result.Failed;
+                }
 
                 // create and initiate the xaml window
                 AreaCoefficientsWindow window = new AreaCoefficientsWindow();

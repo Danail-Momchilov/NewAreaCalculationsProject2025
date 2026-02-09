@@ -22,7 +22,7 @@ namespace AreaCalculations
             {
                 application.GetRibbonPanels(tabName);
             }
-            catch { }            
+            catch { }  
 
             // creatte a panel
             RibbonPanel areaCalcPanel = application.CreateRibbonPanel(tabName, "Area Calculations");
@@ -58,7 +58,7 @@ namespace AreaCalculations
 
             // Migrate Common Groups button
             PushButtonData migrateButtonData = new PushButtonData("MigrateGroups", "Migrate Common Groups", assembName, "AreaCalculations.MigrateCommonGroups");
-            migrateButtonData.LargeImage = new BitmapImage(new Uri(path + @"\settings.png"));
+            migrateButtonData.LargeImage = new BitmapImage(new Uri(path + @"\migrateGroups.png"));
             migrateButtonData.ToolTip = "Мигрирайте специалните общи части от стария към новия формат (A Instance Area Primary -> A Instance Area Common Group)";
             settingsDropdown.AddPushButton(migrateButtonData);
 
@@ -78,27 +78,26 @@ namespace AreaCalculations
 
 
 
-            // create PushButon 2
-            PushButtonData butonData2 = new PushButtonData("Area\ncoefficients", "Area\ncoefficients", assembName, "AreaCalculations.AreaCoefficients");
+            // create Area Calculations dropdown
+            PulldownButtonData areaCalcDropdownData = new PulldownButtonData("AreaCalcDropdown", "Area\ncalculations");
+            areaCalcDropdownData.LargeImage = new BitmapImage(new Uri(path + @"\areaIcon.png"));
+            areaCalcDropdownData.ToolTip = "Изчисляване на площи и коефициенти";
+
+            PulldownButton areaCalcDropdown = areaCalcPanel.AddItem(areaCalcDropdownData) as PulldownButton;
+
+            // Area Coefficients button
+            PushButtonData butonData2 = new PushButtonData("Area\ncoefficients", "Area coefficients", assembName, "AreaCalculations.AreaCoefficients");
             butonData2.LargeImage = new BitmapImage(new Uri(path + @"\areacIcon.png"));
-
-            areaCalcPanel.AddItem(butonData2);
-            areaCalcPanel.AddSeparator();
-
             butonData2.ToolTip = "Натиснете този бутон, за да попълните автоматично всички Area коефициенти";
-            butonData2.ToolTipImage = new BitmapImage(new Uri(path + @"\areacIcon.png"));
+            areaCalcDropdown.AddPushButton(butonData2);
 
-
-
-            // create PushButon 3
-            PushButtonData butonData3 = new PushButtonData("Area\ncalculations", "Area\ncalculations", assembName, "AreaCalculations.CalculateAreaParameters");
+            // Area Calculations button
+            PushButtonData butonData3 = new PushButtonData("Area\ncalculations", "Area calculations", assembName, "AreaCalculations.CalculateAreaParameters");
             butonData3.LargeImage = new BitmapImage(new Uri(path + @"\areaIcon.png"));
-
-            areaCalcPanel.AddItem(butonData3);
-            areaCalcPanel.AddSeparator();
-
             butonData3.ToolTip = "Натиснете този бутон, за да изчислите параметрите към всяка една Area";
-            butonData3.ToolTipImage = new BitmapImage(new Uri(path + @"\areaIcon.png"));
+            areaCalcDropdown.AddPushButton(butonData3);
+
+            areaCalcPanel.AddSeparator();
 
 
 

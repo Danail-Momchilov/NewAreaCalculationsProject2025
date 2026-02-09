@@ -23,7 +23,6 @@ namespace AreaCalculations
         private double areaConvert = 10.7639104167096;
         private SmartRound smartRound { get; set; }
         private AritmeticAssistant aritAsist { get; set; }
-        private AreaCalculationsSettings settings { get; set; }
         private ElementId areaSchemeId { get; set; }
         private bool updateIfNoValue(Parameter param, double value)
         {
@@ -41,9 +40,10 @@ namespace AreaCalculations
             this.smartRound = new SmartRound(document);
             this.aritAsist = new AritmeticAssistant();
 
-            // Load settings for filtering
-            this.settings = SettingsManager.LoadSettings();
-            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+            // Resolve settings for current project
+            string settingsError;
+            ResolvedSettings resolved = SettingsManager.ResolveSettings(document, out settingsError);
+            this.areaSchemeId = resolved?.AreaSchemeId;
 
             ParameterValueProvider provider = new ParameterValueProvider(new ElementId(BuiltInParameter.ROOM_AREA));
             FilterNumericRuleEvaluator evaluator = new FilterNumericGreater();
@@ -61,9 +61,10 @@ namespace AreaCalculations
             this.smartRound = new SmartRound(document);
             this.aritAsist = new AritmeticAssistant();
 
-            // Load settings for filtering
-            this.settings = SettingsManager.LoadSettings();
-            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+            // Resolve settings for current project
+            string settingsError2;
+            ResolvedSettings resolved2 = SettingsManager.ResolveSettings(document, out settingsError2);
+            this.areaSchemeId = resolved2?.AreaSchemeId;
 
             ParameterValueProvider provider = new ParameterValueProvider(new ElementId(BuiltInParameter.ROOM_AREA));
             FilterNumericRuleEvaluator evaluator = new FilterNumericGreater();

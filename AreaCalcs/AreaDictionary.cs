@@ -29,7 +29,6 @@ namespace AreaCalculations
         private readonly double lengthConvert = 30.48;
         private SmartRound smartRounder { get; set; }
         private AritmeticAssistant aritAsist { get; set; }
-        private AreaCalculationsSettings settings { get; set; }
         private ElementId areaSchemeId { get; set; }
         private ElementId phaseId { get; set; }
         public string errorMessage { get; set; }
@@ -79,10 +78,11 @@ namespace AreaCalculations
             this.smartRounder = new SmartRound(doc);
             this.aritAsist = new AritmeticAssistant();
 
-            // Load settings for filtering
-            this.settings = SettingsManager.LoadSettings();
-            this.areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
-            this.phaseId = !string.IsNullOrEmpty(settings.PhaseId) ? new ElementId(long.Parse(settings.PhaseId)) : null;
+            // Resolve settings for current project
+            string settingsError;
+            ResolvedSettings resolved = SettingsManager.ResolveSettings(activeDoc, out settingsError);
+            this.areaSchemeId = resolved?.AreaSchemeId;
+            this.phaseId = resolved?.PhaseId;
 
             ProjectInfo projectInfo = activeDoc.ProjectInformation;
 
@@ -451,9 +451,10 @@ namespace AreaCalculations
         {
             string warnings = "";
 
-            // Load settings for filtering
-            AreaCalculationsSettings settings = SettingsManager.LoadSettings();
-            ElementId areaSchemeId = !string.IsNullOrEmpty(settings.AreaSchemeId) ? new ElementId(long.Parse(settings.AreaSchemeId)) : null;
+            // Resolve settings for current project
+            string settingsError;
+            ResolvedSettings resolved = SettingsManager.ResolveSettings(doc, out settingsError);
+            ElementId areaSchemeId = resolved?.AreaSchemeId;
 
             // Get all areas with non-zero area
             ParameterValueProvider provider = new ParameterValueProvider(new ElementId(BuiltInParameter.ROOM_AREA));
