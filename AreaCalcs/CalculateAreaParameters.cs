@@ -123,7 +123,8 @@ namespace AreaCalculations
                 else
                 {
                     TaskDialog dialogReport = new TaskDialog("Репорт");
-                    dialogReport.MainInstruction = "Успешно бяха преизчислени параметрите на всички Areas в обекта!";
+                    dialogReport.MainInstruction = "Успешно бяха преизчислени параметрите на всички Areas в обекта!" +
+                        $"\n\nИгнорирани Areas (НЕПРИЛОЖИМО): {areaDict.ignoredAreasCount} бр.";
                     dialogReport.Show();
                     return Result.Succeeded;
                 }                

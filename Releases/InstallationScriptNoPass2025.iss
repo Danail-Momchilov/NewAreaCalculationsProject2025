@@ -62,6 +62,7 @@ Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\inf
 Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\version.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\settings.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\migrateGroups.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\calculationsIcon.png"; DestDir: "{app}"; Flags: ignoreversion
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"

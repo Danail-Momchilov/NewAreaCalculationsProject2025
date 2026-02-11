@@ -132,8 +132,9 @@ namespace AreaCalculations
                 }
 
                 // output report
-                output.updateFinalOutput (ProjInfo.plotAreas, ProjInfo.plotNames, areaCalcs.build, density, 
+                output.updateFinalOutput (ProjInfo.plotAreas, ProjInfo.plotNames, areaCalcs.build, density,
                     areaCalcs.totalBuild, kint, greenery.greenAreas, greenery.achievedPercentages);
+                output.addString($"\nИгнорирани Areas (НЕПРИЛОЖИМО): {areaCalcs.ignoredAreasCount} бр.");
 
                 TaskDialog testDialog = new TaskDialog("Report");
                 testDialog.MainInstruction = output.outputString;

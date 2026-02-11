@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|d:\\projects c#\\area calculations\\newareacalculationsproject2025\\settings\\migratecommongroups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:settings\\migratecommongroups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|d:\\projects c#\\area calculations\\newareacalculationsproject2025\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{241A5378-9D1E-434B-8D74-005952A0B595}|AreaCalculations.csproj|solutionrelative:app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,14 +35,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MigrateCommonGroups.cs",
-              "DocumentMoniker": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\Settings\\MigrateCommonGroups.cs",
-              "RelativeDocumentMoniker": "Settings\\MigrateCommonGroups.cs",
-              "ToolTip": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\Settings\\MigrateCommonGroups.cs",
-              "RelativeToolTip": "Settings\\MigrateCommonGroups.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAyAAAAAAAAAA==",
+              "Title": "App.cs",
+              "DocumentMoniker": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\App.cs",
+              "RelativeDocumentMoniker": "App.cs",
+              "ToolTip": "D:\\PROJECTS C#\\AREA CALCULATIONS\\NewAreaCalculationsProject2025\\App.cs",
+              "RelativeToolTip": "App.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-09T13:48:09.536Z",
+              "WhenOpened": "2026-02-11T12:23:41.539Z",
               "EditorCaption": ""
             }
           ]

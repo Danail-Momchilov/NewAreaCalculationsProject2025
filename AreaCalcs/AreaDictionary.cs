@@ -53,6 +53,7 @@ namespace AreaCalculations
         public double areasCount { get; set; }
         public double missingAreasCount { get; set; }
         public string missingAreasData { get; set; }
+        public int ignoredAreasCount { get; set; }
         public AreaDictionary(Document activeDoc)
         {
             this.doc = activeDoc;
@@ -91,7 +92,15 @@ namespace AreaCalculations
                 .OfCategory(BuiltInCategory.OST_Areas)
                 .WhereElementIsNotElementType()
                 .Cast<Area>()
+                .Where(a => a.Area > 0)
                 .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
+                .ToList();
+
+            // Filter out areas with "A Instance Area Group" = "НЕПРИЛОЖИМО"
+            this.ignoredAreasCount = areasCollector
+                .Count(a => a.LookupParameter("A Instance Area Group")?.AsString() == "НЕПРИЛОЖИМО");
+            areasCollector = areasCollector
+                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
                 .ToList();
 
             // construct main AreaOrganizer Dictionary
@@ -102,7 +111,7 @@ namespace AreaCalculations
                 string plotName = area.LookupParameter("A Instance Area Plot").AsString();
                 string groupName = area.LookupParameter("A Instance Area Group").AsString();
 
-                if (!string.IsNullOrEmpty(plotName) && !string.IsNullOrEmpty(groupName) && area.Area!=0)
+                if (!string.IsNullOrEmpty(plotName) && !string.IsNullOrEmpty(groupName))
                 {
                     if (!AreasOrganizer.ContainsKey(plotName))
                     {
@@ -406,6 +415,7 @@ namespace AreaCalculations
                 .OfCategory(BuiltInCategory.OST_Areas)
                 .WhereElementIsNotElementType()
                 .Cast<Area>()
+                .Where(a => a.Area > 0)
                 .FirstOrDefault();
 
             if (sampleArea == null)
@@ -468,6 +478,10 @@ namespace AreaCalculations
                 .WherePasses(filter)
                 .Cast<Area>()
                 .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
+                .ToList();
+
+            areasCollector = areasCollector
+                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
                 .ToList();
 
             // Track common groups for cross-validation
@@ -1270,7 +1284,10 @@ namespace AreaCalculations
             transaction.Start();
 
             foreach (Area area in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType()
-                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList())
+                .Cast<Area>().Where(a => a.Area > 0)
+                .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
+                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
+                .ToList())
             {
                 if (area.LookupParameter("A Instance Area Category").AsString() == "САМОСТОЯТЕЛЕН ОБЕКТ"
                     && !(area.LookupParameter("A Instance Area Primary").HasValue && area.LookupParameter("A Instance Area Primary").AsString() != ""))

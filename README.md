@@ -5,6 +5,7 @@ A comprehensive Area Calculations plugin for Autodesk Revit, specifically tailor
 ## Version 2.1.1
 
 ### New Features
+- **Ignored Areas Filter**: Areas with `A Instance Area Group` = "НЕПРИЛОЖИМО" are excluded from all calculations, exports, and validations, with the ignored count reported in output messages
 - **Settings**: Area Scheme and Phase selection for filtering areas by scheme and site elements/rooms by phase
 - **Common Area Groups**: New parameter `A Instance Area Common Group` for determining the main area of common parts, replacing the old primary-based logic
 - **Migration Tool**: One-click migration button to switch from old to new common area logic

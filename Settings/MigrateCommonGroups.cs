@@ -40,6 +40,13 @@ namespace AreaCalculations
                     .Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
                     .ToList();
 
+                // Filter out areas with "A Instance Area Group" = "НЕПРИЛОЖИМО"
+                int ignoredCount = allAreas
+                    .Count(a => a.LookupParameter("A Instance Area Group")?.AsString() == "НЕПРИЛОЖИМО");
+                allAreas = allAreas
+                    .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
+                    .ToList();
+
                 // Validate required parameters exist
                 Area sampleArea = allAreas.FirstOrDefault();
                 if (sampleArea != null)
@@ -295,7 +302,8 @@ namespace AreaCalculations
                         $"Миграцията приключи успешно!\n\n" +
                         $"Създадени групи: {validGroups.Count}\n" +
                         $"Обновени ОБЩИ ЧАСТИ: {updatedCommonAreas}\n" +
-                        $"Обновени САМОСТОЯТЕЛНИ ОБЕКТИ: {updatedIndividualAreas}");
+                        $"Обновени САМОСТОЯТЕЛНИ ОБЕКТИ: {updatedIndividualAreas}\n\n" +
+                        $"Игнорирани Areas (НЕПРИЛОЖИМО): {ignoredCount}");
                 }
 
                 return Result.Succeeded;

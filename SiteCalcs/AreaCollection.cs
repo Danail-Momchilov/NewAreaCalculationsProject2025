@@ -18,6 +18,7 @@ namespace AreaCalculations
         public List<double> build { get; set; }
         public List<double> totalBuild { get; set; }
         public List<Area> areasCollector { get; set; }
+        public int ignoredAreasCount { get; set; }
         public Document doc { get; set; }
         Transaction transaction { get; set; }
         private double areaConvert = 10.7639104167096;
@@ -53,6 +54,12 @@ namespace AreaCalculations
             this.areasCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
                 .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
 
+            this.ignoredAreasCount = this.areasCollector
+                .Count(a => a.LookupParameter("A Instance Area Group")?.AsString() == "НЕПРИЛОЖИМО");
+            this.areasCollector = this.areasCollector
+                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
+                .ToList();
+
             this.transaction = new Transaction(doc, "Update Areas");
         }
         public AreaCollection(Document document, List<string> plotNames)
@@ -73,6 +80,12 @@ namespace AreaCalculations
 
             this.areasCollector = new FilteredElementCollector(document).OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
                 .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
+
+            this.ignoredAreasCount = this.areasCollector
+                .Count(a => a.LookupParameter("A Instance Area Group")?.AsString() == "НЕПРИЛОЖИМО");
+            this.areasCollector = this.areasCollector
+                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
+                .ToList();
 
             this.transaction = new Transaction(document, "Update Areas");
 
@@ -280,7 +293,9 @@ namespace AreaCalculations
 
                             List<Area> mainAreasCollector = new FilteredElementCollector(doc)
                                 .OfCategory(BuiltInCategory.OST_Areas).WhereElementIsNotElementType().WherePasses(filter)
-                                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId).ToList();
+                                .Cast<Area>().Where(a => areaSchemeId == null || a.AreaScheme.Id == areaSchemeId)
+                                .Where(a => a.LookupParameter("A Instance Area Group")?.AsString() != "НЕПРИЛОЖИМО")
+                                .ToList();
 
                             foreach (Area mainArea in mainAreasCollector)
                             {

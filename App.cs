@@ -66,24 +66,18 @@ namespace AreaCalculations
 
 
 
-            // create PushButon1
-            PushButtonData butonData1 = new PushButtonData("Plot\nparameters", "Plot\nparameters", assembName, "AreaCalculations.SiteCalcs");
-            butonData1.LargeImage = new BitmapImage(new Uri(path + @"\plotIcon.png"));
-
-            areaCalcPanel.AddItem(butonData1);
-            areaCalcPanel.AddSeparator();
-
-            butonData1.ToolTip = "Натиснете този бутон, за да изчислите всички параметри за имота";
-            butonData1.ToolTipImage = new BitmapImage(new Uri(path + @"\plotIcon.png"));
-
-
-
             // create Area Calculations dropdown
-            PulldownButtonData areaCalcDropdownData = new PulldownButtonData("AreaCalcDropdown", "Area\ncalculations");
-            areaCalcDropdownData.LargeImage = new BitmapImage(new Uri(path + @"\areaIcon.png"));
-            areaCalcDropdownData.ToolTip = "Изчисляване на площи и коефициенти";
+            PulldownButtonData areaCalcDropdownData = new PulldownButtonData("CalcsDropDown", "Calculations");
+            areaCalcDropdownData.LargeImage = new BitmapImage(new Uri(path + @"\calculationsIcon.png"));
+            areaCalcDropdownData.ToolTip = "Изчисляване на параметри, коефициенти и площи";
 
             PulldownButton areaCalcDropdown = areaCalcPanel.AddItem(areaCalcDropdownData) as PulldownButton;
+
+            // Plot Parameters button
+            PushButtonData butonData1 = new PushButtonData("Plot\nparameters", "Plot parameters", assembName, "AreaCalculations.SiteCalcs");
+            butonData1.LargeImage = new BitmapImage(new Uri(path + @"\plotIcon.png"));
+            butonData1.ToolTip = "Натиснете този бутон, за да изчислите всички параметри за имота";
+            areaCalcDropdown.AddPushButton(butonData1);
 
             // Area Coefficients button
             PushButtonData butonData2 = new PushButtonData("Area\ncoefficients", "Area coefficients", assembName, "AreaCalculations.AreaCoefficients");
