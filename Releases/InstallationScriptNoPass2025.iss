@@ -1,5 +1,5 @@
 #define MyAppName "IPA-AreaCalculations"
-#define MyAppVersion "2.0.1"
+#define MyAppVersion "2.1.1"
 #define MyAppPublisher "IPA Architecture and More"
 #define MyAppExeName "MyProg-x64.exe"
 
@@ -13,10 +13,10 @@ CreateAppDir=yes
 DefaultDirName=C:\Program Files\IPA\AreaCalculations2.0
 DisableDirPage=yes
 DisableProgramGroupPage=yes
-LicenseFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\LICENSE.txt
-OutputDir=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\Releases
-OutputBaseFilename=IPA-AreaCalculationsNoPassV2.0.1
-SetupIconFile=B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\installerIcon.ico
+LicenseFile=D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\LICENSE.txt
+OutputDir=D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\Releases
+OutputBaseFilename=IPA-AreaCalculationsNoPassV2.1.1
+SetupIconFile=D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\installerIcon.ico
 SolidCompression=yes
 WizardStyle=modern
 AppMutex={#MyAppName}
@@ -34,32 +34,34 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Main DLLs and dependencies (from net8.0-windows release folder)
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.deps.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\AreaCalculations.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
 ; All support DLLs
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ClosedXML.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ClosedXML.Parser.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ExcelNumberFormat.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\RBush.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\SixLabors.Fonts.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\System.IO.Packaging.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ClosedXML.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ClosedXML.Parser.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\ExcelNumberFormat.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\RBush.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\SixLabors.Fonts.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\bin\Release\net8.0-windows\System.IO.Packaging.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Add-in files for 2025 and 2026
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2025"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2026"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2025"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\AreaCalculations.addin"; DestDir: "C:\ProgramData\Autodesk\Revit\Addins\2026"; Flags: ignoreversion
 
 ; Icons and images
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\areacIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\areaIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\excelIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\plotIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\education.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\info.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "B:\06. BIM AUTOMATION\02. C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\version.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\areacIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\areaIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\excelIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\plotIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\education.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\info.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\version.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\settings.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROJECTS C#\AREA CALCULATIONS\NewAreaCalculationsProject2025\img\migrateGroups.png"; DestDir: "{app}"; Flags: ignoreversion
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"

@@ -1,27 +1,28 @@
-# Area Calculations Plugin v2.0
+# Area Calculations Plugin v2.1.1
 
 A comprehensive Area Calculations plugin for Autodesk Revit, specifically tailored for Bulgarian building regulations and practices.
 
-## 🎉 Version 2.0 Features Complete
+## Version 2.1.1
 
-### **Core Improvements**
-- **ClosedXML Migration**: Fully migrated from Excel Interop to ClosedXML - no more Excel installation dependency!
-- **Bug Fixes**: Multiple minor bugs fixed
-- **Enhanced Resources**: Three-way resource access (LMS, local folder, and detached sample file)
+### New Features
+- **Settings**: Area Scheme and Phase selection for filtering areas by scheme and site elements/rooms by phase
+- **Common Area Groups**: New parameter `A Instance Area Common Group` for determining the main area of common parts, replacing the old primary-based logic
+- **Migration Tool**: One-click migration button to switch from old to new common area logic
+- **Special Common Area %**: Calculation of special common area percentages
+- **Improved Error Handling**: Additional validation warnings across all commands, including cross-project settings detection
 
-### **User Experience Enhancements** 
-- **Passive-Aggressive Error Messages**: Delightfully entertaining error messages that escalate from mild annoyance to creative insults
-
-### **Technical Upgrades**
-- **.NET 8 + Revit 2026 API**: Modern framework with proper dependency deployment
-- **Better Error Handling**: More robust validation throughout the application
+### Bug Fixes
+- Fixed minor calculation inaccuracies
+- Minor improvements to the Excel export
+- Fixed settings not resolving correctly when switching between projects
 
 ## Features
 
 The plugin provides comprehensive area calculation functionality including:
 - Plot parameters calculations
-- Area coefficient assignments 
+- Area coefficient assignments
 - Area parameter calculations
+- Common area group management
 - Excel export functionality with ClosedXML
 - Bulgarian language UI messages and tooltips
 - Smart rounding utilities
@@ -32,7 +33,5 @@ The plugin provides comprehensive area calculation functionality including:
 - **Target Framework**: .NET 8
 - **Revit Version**: 2025 and 2026
 - **Excel Library**: ClosedXML (no Excel installation required)
-- **Language**: Bulgarian UI with English passive-aggressive error messages
+- **Language**: Bulgarian UI
 - **Dependencies**: All ClosedXML dependencies automatically deployed
-
-The plugin now provides a much better user experience with reliable Excel export, entertaining error messages, and convenient resource access - all while maintaining the original Bulgarian building regulations compliance. Ready for production! 🚀
